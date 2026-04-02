@@ -143,6 +143,28 @@
       line-height: 1.1;
     }
 
+    /* "다음/이전"처럼 7번째(또는 마지막) 버튼이 있어도
+       기존 6개 타일 크기를 흐트러뜨리지 않도록 작은 형태로 표시 */
+    .tile-nav {
+      width: min(180px, 55%);
+      aspect-ratio: auto;
+      min-height: 56px;
+      padding: 10px 12px;
+      gap: 0;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+    }
+
+    .tile-nav img {
+      display: none;
+    }
+
+    .tile-nav .tile-label {
+      font-size: 1rem;
+    }
+
     .tile-art {
       flex: 1;
       min-height: 0;
@@ -211,6 +233,18 @@
       color: #475569;
     }
 
+    @media (min-width: 768px) {
+      .grid:not(.detail):not(.media) {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        max-width: 960px;
+        margin-inline: auto;
+      }
+
+      .grid:not(.detail):not(.media) .tile {
+        width: min(30vw, 260px);
+      }
+    }
+
     @media (max-width: 760px) {
       .grid.detail,
       .grid.media {
@@ -248,6 +282,136 @@
   </main>
 
   <script>
+    function buildStudyScreensMap() {
+      const stickerKinds = [
+        { label: "마트", image: "./images/stickerbook_mart.png" },
+        { label: "과일", image: "./images/stickerbook_fruit.png" },
+        { label: "우리집", image: "./images/stickerbook_myhome.png" },
+        { label: "동물", image: "./images/stickerbook_animal.png" },
+        { label: "탈것", image: "./images/stickerbook_vehicle.png" },
+        { label: "숫자", image: "./images/stickerbook_number.png" },
+        { label: "눈코입", image: "./images/stickerbook_eyenosemouth.png" },
+        { label: "한글", image: "./images/stickerbook_language.png" },
+        { label: "애완동물", image: "./images/stickerbook_pet.png" },
+        { label: "모양.색깔", image: "./images/stickerbook_shape.png" }
+      ];
+      const defs = [
+        {
+          key: "studyKnobPuzzle",
+          label: "꼭지퍼즐",
+          subs: ["꼭지퍼즐 ①", "꼭지퍼즐 ②", "꼭지퍼즐 ③", "꼭지퍼즐 ④", "꼭지퍼즐 ⑤", "꼭지퍼즐 ⑥"]
+        },
+        {
+          key: "studyPeg",
+          label: "페그꼽기",
+          subs: ["페그꼽기 ①", "페그꼽기 ②", "페그꼽기 ③", "페그꼽기 ④", "페그꼽기 ⑤", "페그꼽기 ⑥"]
+        },
+        {
+          key: "studySoundCard",
+          label: "사운드북 카드",
+          subs: ["사운드북 카드 ①", "사운드북 카드 ②", "사운드북 카드 ③", "사운드북 카드 ④", "사운드북 카드 ⑤", "사운드북 카드 ⑥"]
+        },
+        {
+          key: "studyColorPencil",
+          label: "색연필",
+          subs: ["색연필 ①", "색연필 ②", "색연필 ③", "색연필 ④", "색연필 ⑤", "색연필 ⑥"]
+        },
+        {
+          key: "studyCard",
+          label: "카드",
+          subs: ["카드 ①", "카드 ②", "카드 ③", "카드 ④", "카드 ⑤", "카드 ⑥"]
+        }
+      ];
+      const rest = {};
+      const homeItems = [
+        { label: "스티커북", nav: "studySticker", image: "./images/study.png" },
+        ...defs.map((d) => ({
+          label: d.label,
+          nav: d.key,
+          image: "./images/study.png"
+        }))
+      ];
+
+      rest.studySticker = {
+        title: "스티커북",
+        helper: "원하는 종류를 선택하세요. (더 많은 종류는 「다음」)",
+        hero: [],
+        items: [
+          ...stickerKinds.slice(0, 6).map((sub, i) => ({
+            label: sub.label,
+            nav: `studySticker_${i + 1}`,
+            image: sub.image
+          })),
+          { label: "다음", nav: "studySticker_p2", image: "./images/study.png" }
+        ],
+        layout: "main",
+        showPlayer: false
+      };
+
+      rest.studySticker_p2 = {
+        title: "스티커북",
+        helper: "나머지 종류를 선택하세요. (앞 화면은 「이전」)",
+        hero: [],
+        items: [
+          ...stickerKinds.slice(6, 10).map((sub, i) => ({
+            label: sub.label,
+            nav: `studySticker_${i + 7}`,
+            image: sub.image
+          })),
+          { label: "이전", nav: "studySticker", image: "./images/study.png" }
+        ],
+        layout: "main",
+        showPlayer: false
+      };
+
+      stickerKinds.forEach((sub, i) => {
+        const k = `studySticker_${i + 1}`;
+        rest[k] = {
+          title: sub.label,
+          helper: "원하는 항목을 선택하세요.",
+          hero: [],
+          items: Array.from({ length: 6 }, (_, j) => ({
+            label: `${sub.label} · ${j + 1}번`,
+            image: sub.image
+          })),
+          layout: "main",
+          showPlayer: false
+        };
+      });
+
+      defs.forEach((d) => {
+        rest[d.key] = {
+          title: d.label,
+          helper: "원하는 종류를 선택하세요.",
+          hero: [],
+          items: d.subs.map((sub, i) => ({
+            label: sub,
+            nav: `${d.key}_${i + 1}`,
+            image: "./images/study.png"
+          })),
+          layout: "main",
+          showPlayer: false
+        };
+        d.subs.forEach((sub, i) => {
+          const k = `${d.key}_${i + 1}`;
+          rest[k] = {
+            title: sub,
+            helper: "원하는 항목을 선택하세요.",
+            hero: [],
+            items: Array.from({ length: 6 }, (_, j) => ({
+              label: `${sub} · ${j + 1}번`,
+              image: "./images/study.png"
+            })),
+            layout: "main",
+            showPlayer: false
+          };
+        });
+      });
+      return { homeItems, rest };
+    }
+
+    const STUDY_SCREEN_MAP = buildStudyScreensMap();
+
     const DATA = {
       youtube: {
         busVideo: "https://www.youtube.com/watch?v=Bks5WybVkQ0&t=441s",
@@ -305,10 +469,23 @@
             { label: "아이패드", nav: "ipadHome", image: "./images/ipad.png" },
             { label: "밥 먹기", nav: "meal", image: "./images/meal.png" },
             { label: "화장실", nav: "toilet", image: "./images/toilet.png" },
-            { label: "외출하기", nav: "outingHome", image: "./images/outing.png" }
+            { label: "외출하기", nav: "outingHome", image: "./images/outing.png" },
+            { label: "공부하기", nav: "studyHome", image: "./images/study.png" },
+            { label: "휴식", icon: "🛋️" }
           ],
           layout: "main"
         },
+
+        studyHome: {
+          title: "공부하기",
+          helper: "카테고리를 선택하세요. 라벨·종류 목록은 스크립트 상단 buildStudyScreensMap의 defs에서 바꿀 수 있어요.",
+          hero: [],
+          items: STUDY_SCREEN_MAP.homeItems,
+          layout: "main",
+          showPlayer: false
+        },
+
+        ...STUDY_SCREEN_MAP.rest,
 
         ipadHome: {
           title: "아이패드(유튜브)",
@@ -488,14 +665,15 @@
           helper: "원하는 것을 선택하세요.",
           hero: [],
           items: [
-            { label: "양치" },
-            { label: "샤워" },
-            { label: "소변" },
-            { label: "대변" },
-            { label: "세수" },
-            { label: "손씻기" }
+            { label: "양치하기", image: "./images/brush.png" },
+            { label: "샤워", image: "./images/shower.png" },
+            { label: "소변", image: "./images/pee.png" },
+            { label: "대변", image: "./images/poo.png" },
+            { label: "세수", image: "./images/wash_face.png" },
+            { label: "손씻기", image: "./images/wash_hands.png" }
           ],
-          layout: "detail"
+          layout: "media",
+          showPlayer: false
         },
 
         outingHome: {
@@ -725,16 +903,23 @@
       items.forEach((item, index) => {
         const btn = document.createElement("button");
         const yUrl = resolveYoutube(item);
-        if ((isMain && item.image) || (isMedia && yUrl)) {
-          btn.className = "tile";
-          const img = document.createElement("img");
-          img.src = item.image || getThumbnail(yUrl);
-          img.alt = item.label;
-          setupImageElement(img, index < 2);
+        if ((isMain && item.image) || (isMedia && (item.image || yUrl))) {
+          const isSmallNavButton = isMain && (item.label === "다음" || item.label === "이전");
+          btn.className = isSmallNavButton ? "tile tile-nav" : "tile";
+
+          if (!isSmallNavButton) {
+            const img = document.createElement("img");
+            img.src = item.image || getThumbnail(yUrl);
+            img.alt = item.label;
+            // Local PNG in ./images/ — always eager (Safari + lazy in grid can fail to paint).
+            const localImg = item.image && item.image.startsWith("./images/");
+            setupImageElement(img, index < 2 || !!localImg);
+            btn.appendChild(img);
+          }
+
           const label = document.createElement("div");
           label.className = "tile-label";
           label.textContent = item.label;
-          btn.appendChild(img);
           btn.appendChild(label);
         } else if (isMain) {
           btn.className = "tile";
