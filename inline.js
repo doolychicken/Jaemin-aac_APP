@@ -1,0 +1,1140 @@
+
+    function buildStudyScreensMap() {
+      const stickerKinds = [
+        { label: "마트", image: "./images/stickerbook_mart.png" },
+        { label: "과일", image: "./images/stickerbook_fruit.png" },
+        { label: "우리집", image: "./images/stickerbook_myhome.png" },
+        { label: "동물", image: "./images/stickerbook_animal.png" },
+        { label: "탈것", image: "./images/stickerbook_vehicle.png" },
+        { label: "숫자", image: "./images/stickerbook_number.png" },
+        { label: "눈코입", image: "./images/stickerbook_eyenosemouth.png" },
+        { label: "한글", image: "./images/stickerbook_language.png" },
+        { label: "애완동물", image: "./images/stickerbook_pet.png" },
+        { label: "모양.색깔", image: "./images/stickerbook_shape.png" }
+      ];
+      const knobKinds = [
+        { label: "숫자", image: "./images/knobpuzzle_numbers.png" },
+        { label: "모양", image: "./images/knobpuzzle_shapes2.png" },
+        { label: "과일", image: "./images/knobpuzzle_fruits.png" },
+        { label: "탈것", image: "./images/knobpuzzle_vehicles.png" }
+      ];
+      const defs = [
+        {
+          key: "studyPeg",
+          label: "페그꼽기",
+          studyTileImage: "./images/study_pegboard.png",
+          subs: ["페그꼽기 ①", "페그꼽기 ②", "페그꼽기 ③", "페그꼽기 ④", "페그꼽기 ⑤", "페그꼽기 ⑥"]
+        },
+        {
+          key: "studySoundCard",
+          label: "사운드북 카드",
+          studyTileImage: "./images/study_soundbook_card.png",
+          subs: ["사운드북 카드 ①", "사운드북 카드 ②", "사운드북 카드 ③", "사운드북 카드 ④", "사운드북 카드 ⑤", "사운드북 카드 ⑥"]
+        },
+        {
+          key: "studyColorPencil",
+          label: "색연필",
+          studyTileImage: "./images/study_color_pencil.png",
+          subs: ["색연필 ①", "색연필 ②", "색연필 ③", "색연필 ④", "색연필 ⑤", "색연필 ⑥"]
+        },
+        {
+          key: "studyCard",
+          label: "카드",
+          subs: ["카드 ①", "카드 ②", "카드 ③", "카드 ④", "카드 ⑤", "카드 ⑥"]
+        }
+      ];
+      const rest = {};
+      const homeItems = [
+        { label: "스티커북", nav: "studySticker", image: "./images/stickerbook_mart.png" },
+        { label: "꼭지퍼즐", nav: "studyKnobPuzzle", image: "./images/knobpuzzle_fruits.png" },
+        ...defs.map((d) => ({
+          label: d.label,
+          nav: d.key,
+          image: d.studyTileImage || "./images/study.png"
+        }))
+      ];
+
+      rest.studySticker = {
+        title: "스티커북",
+        helper: "원하는 종류를 선택하세요. (더 많은 종류는 「다음」)",
+        hero: [],
+        items: [
+          ...stickerKinds.slice(0, 6).map((sub, i) => ({
+            label: sub.label,
+            nav: `studySticker_${i + 1}`,
+            image: sub.image
+          })),
+          { label: "다음", nav: "studySticker_p2", image: "./images/study.png" }
+        ],
+        layout: "main",
+        showPlayer: false
+      };
+
+      rest.studySticker_p2 = {
+        title: "스티커북",
+        helper: "나머지 종류를 선택하세요. (앞 화면은 「이전」)",
+        hero: [],
+        items: [
+          ...stickerKinds.slice(6, 10).map((sub, i) => ({
+            label: sub.label,
+            nav: `studySticker_${i + 7}`,
+            image: sub.image
+          })),
+          { label: "이전", nav: "studySticker", image: "./images/study.png" }
+        ],
+        layout: "main",
+        showPlayer: false
+      };
+
+      stickerKinds.forEach((sub, i) => {
+        const k = `studySticker_${i + 1}`;
+        rest[k] = {
+          title: sub.label,
+          helper: "그림을 누르면 읽어 줘요.",
+          hero: [],
+          items: [],
+          layout: "spotlight",
+          spotlight: {
+            image: sub.image,
+            label: sub.label
+          },
+          showPlayer: false
+        };
+      });
+
+      rest.studyKnobPuzzle = {
+        title: "꼭지퍼즐",
+        helper: "원하는 종류를 선택하세요.",
+        hero: [],
+        items: knobKinds.map((sub, i) => ({
+          label: sub.label,
+          nav: `studyKnobPuzzle_${i + 1}`,
+          image: sub.image
+        })),
+        layout: "main",
+        showPlayer: false
+      };
+
+      knobKinds.forEach((sub, i) => {
+        const k = `studyKnobPuzzle_${i + 1}`;
+        let itemDefs;
+        if (sub.label === "숫자") {
+          itemDefs = [
+            { label: `${sub.label} · 1번`, image: "./images/knobpuzzle_numbers.png" },
+            { label: `${sub.label} · 2번`, image: "./images/knobpuzzle_numbers2.png" },
+            { label: `${sub.label} · 3번`, image: "./images/knobpuzzle_numbers3.png" },
+            { label: `${sub.label} · 4번`, image: "./images/knobpuzzle_numbers.png" },
+            { label: `${sub.label} · 5번`, image: "./images/knobpuzzle_numbers2.png" },
+            { label: `${sub.label} · 6번`, image: "./images/knobpuzzle_numbers3.png" }
+          ];
+        } else if (sub.label === "모양") {
+          itemDefs = [
+            { label: `${sub.label} · 1번`, image: "./images/knobpuzzle_shapes2.png" },
+            { label: `${sub.label} · 2번`, image: "./images/knobpuzzle_shapes.png" },
+            { label: `${sub.label} · 3번`, image: "./images/knobpuzzle_shapes2.png" },
+            { label: `${sub.label} · 4번`, image: "./images/knobpuzzle_shapes.png" },
+            { label: `${sub.label} · 5번`, image: "./images/knobpuzzle_shapes2.png" },
+            { label: `${sub.label} · 6번`, image: "./images/knobpuzzle_shapes.png" }
+          ];
+        } else {
+          itemDefs = Array.from({ length: 6 }, (_, j) => ({
+            label: `${sub.label} · ${j + 1}번`,
+            image: sub.image
+          }));
+        }
+        rest[k] = {
+          title: sub.label,
+          helper: "원하는 조각을 선택하세요.",
+          hero: [],
+          items: itemDefs.map((row, j) => ({
+            label: row.label,
+            nav: `${k}_${j + 1}`,
+            image: row.image
+          })),
+          layout: "main",
+          showPlayer: false
+        };
+        itemDefs.forEach((row, j) => {
+          const leafKey = `${k}_${j + 1}`;
+          rest[leafKey] = {
+            title: row.label,
+            helper: "그림을 누르면 읽어 줘요.",
+            hero: [],
+            items: [],
+            layout: "spotlight",
+            spotlight: {
+              image: row.image,
+              label: row.label
+            },
+            showPlayer: false
+          };
+        });
+      });
+
+      defs.forEach((d) => {
+        rest[d.key] = {
+          title: d.label,
+          helper: "원하는 종류를 선택하세요.",
+          hero: [],
+          items: d.subs.map((sub, i) => ({
+            label: sub,
+            nav: `${d.key}_${i + 1}`,
+            image: "./images/study.png"
+          })),
+          layout: "main",
+          showPlayer: false
+        };
+        d.subs.forEach((sub, i) => {
+          const k = `${d.key}_${i + 1}`;
+          rest[k] = {
+            title: sub,
+            helper: "원하는 항목을 선택하세요.",
+            hero: [],
+            items: Array.from({ length: 6 }, (_, j) => ({
+              label: `${sub} · ${j + 1}번`,
+              image: "./images/study.png"
+            })),
+            layout: "main",
+            showPlayer: false
+          };
+        });
+      });
+      return { homeItems, rest };
+    }
+
+    const STUDY_SCREEN_MAP = buildStudyScreensMap();
+
+    const DATA = {
+      youtube: {
+        busVideo: "https://www.youtube.com/watch?v=Bks5WybVkQ0&t=441s",
+        pororo: "https://www.youtube.com/watch?v=NUb53dtqt6E&t=1002s",
+        gayo: "https://www.youtube.com/watch?v=ekr2nIex040",
+        bus1: "https://www.youtube.com/watch?v=Bks5WybVkQ0&t=441s",
+        bus2: "https://www.youtube.com/watch?v=Iz1YrvCq5x4",
+        bus3: "https://www.youtube.com/watch?v=qz5mck_-jXM",
+        bus4: "https://www.youtube.com/watch?v=fa6RXRvixXI",
+        bus5: "https://www.youtube.com/watch?v=A1JfsShN2GE",
+        bus6: "https://www.youtube.com/watch?v=EZvRpLoNazg",
+        pororo1: "https://www.youtube.com/watch?v=NUb53dtqt6E",
+        pororo2: "https://www.youtube.com/watch?v=t8vR8wN9rXw",
+        pororo3: "https://www.youtube.com/watch?v=4wW5vR3n0no",
+        pororo4: "https://www.youtube.com/watch?v=W9D5ZQdYQqY",
+        pororo5: "https://www.youtube.com/watch?v=G2bT3Q5h1gM",
+        pororo6: "https://www.youtube.com/watch?v=u8Qx4M5cGxA"
+        ,kongsuni1: "https://www.youtube.com/watch?v=NUb53dtqt6E"
+        ,kongsuni2: "https://www.youtube.com/watch?v=ekr2nIex040"
+        ,kongsuni3: "https://www.youtube.com/watch?v=Iz1YrvCq5x4"
+        ,kongsuni4: "https://www.youtube.com/watch?v=qz5mck_-jXM"
+        ,kongsuni5: "https://www.youtube.com/watch?v=fa6RXRvixXI"
+        ,kongsuni6: "https://www.youtube.com/watch?v=A1JfsShN2GE"
+        ,tayo1: "https://www.youtube.com/watch?v=Bks5WybVkQ0&t=441s"
+        ,tayo2: "https://www.youtube.com/watch?v=Iz1YrvCq5x4"
+        ,tayo3: "https://www.youtube.com/watch?v=qz5mck_-jXM"
+        ,tayo4: "https://www.youtube.com/watch?v=fa6RXRvixXI"
+        ,tayo5: "https://www.youtube.com/watch?v=A1JfsShN2GE"
+        ,tayo6: "https://www.youtube.com/watch?v=EZvRpLoNazg"
+        ,bebefin1: "https://www.youtube.com/watch?v=ekr2nIex040"
+        ,bebefin2: "https://www.youtube.com/watch?v=NUb53dtqt6E"
+        ,bebefin3: "https://www.youtube.com/watch?v=Iz1YrvCq5x4"
+        ,bebefin4: "https://www.youtube.com/watch?v=qz5mck_-jXM"
+        ,bebefin5: "https://www.youtube.com/watch?v=fa6RXRvixXI"
+        ,bebefin6: "https://www.youtube.com/watch?v=A1JfsShN2GE"
+        ,pinkfong1: "https://www.youtube.com/watch?v=ekr2nIex040"
+        ,pinkfong2: "https://www.youtube.com/watch?v=NUb53dtqt6E"
+        ,pinkfong3: "https://www.youtube.com/watch?v=Iz1YrvCq5x4"
+        ,pinkfong4: "https://www.youtube.com/watch?v=qz5mck_-jXM"
+        ,pinkfong5: "https://www.youtube.com/watch?v=fa6RXRvixXI"
+        ,pinkfong6: "https://www.youtube.com/watch?v=A1JfsShN2GE"
+        ,gayo1: "https://www.youtube.com/watch?v=ekr2nIex040"
+        ,gayo2: "https://www.youtube.com/watch?v=Bks5WybVkQ0&t=441s"
+        ,gayo3: "https://www.youtube.com/watch?v=Iz1YrvCq5x4"
+        ,gayo4: "https://www.youtube.com/watch?v=qz5mck_-jXM"
+        ,gayo5: "https://www.youtube.com/watch?v=fa6RXRvixXI"
+        ,gayo6: "https://www.youtube.com/watch?v=A1JfsShN2GE"
+      },
+      screens: {
+        main: {
+          title: "메인 화면",
+          helper: "버튼을 누르면 음성으로 읽어줍니다.",
+          hero: [],
+          items: [
+            { label: "아이패드", nav: "ipadHome", image: "./images/ipad.png" },
+            { label: "밥 먹기", nav: "meal", image: "./images/meal.png" },
+            { label: "화장실", nav: "toilet", image: "./images/toilet.png" },
+            { label: "외출하기", nav: "outingHome", image: "./images/outing.png" },
+            { label: "공부하기", nav: "studyHome", image: "./images/study.png" },
+            { label: "휴식", icon: "🛋️" },
+            { label: "다음", nav: "main_p2", image: "./images/study.png" }
+          ],
+          layout: "main"
+        },
+
+        main_p2: {
+          title: "메인 화면 (2)",
+          helper: "추가 카테고리를 선택하세요.",
+          hero: [],
+          items: [
+            { label: "스케줄표", nav: "scheduleHome", icon: "📅" },
+            { label: "과목", nav: "subjectHome", icon: "📚" },
+            { label: "날짜", nav: "dateHome", icon: "📆" },
+            { label: "이전", nav: "main", image: "./images/study.png" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        scheduleHome: {
+          title: "스케줄표",
+          helper: "스케줄 관련 항목을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "오늘 일정" },
+            { label: "내일 일정" },
+            { label: "이번 주" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        subjectHome: {
+          title: "과목",
+          helper: "과목을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "국어" },
+            { label: "수학" },
+            { label: "체육" },
+            { label: "음악" },
+            { label: "미술" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        dateHome: {
+          title: "날짜",
+          helper: "날짜/요일을 말해보세요.",
+          hero: [],
+          items: [
+            { label: "오늘은" },
+            { label: "몇 월" },
+            { label: "몇 일" },
+            { label: "무슨 요일" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        studyHome: {
+          title: "공부하기",
+          helper: "카테고리를 선택하세요. 라벨·종류 목록은 스크립트 상단 buildStudyScreensMap의 defs에서 바꿀 수 있어요.",
+          hero: [],
+          items: STUDY_SCREEN_MAP.homeItems,
+          layout: "main",
+          showPlayer: false
+        },
+
+        ...STUDY_SCREEN_MAP.rest,
+
+        ipadHome: {
+          title: "아이패드(유튜브)",
+          helper: "아이패드에서 사용할 기능을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "유튜브", nav: "ipadYouTube", image: "./images/youtube.png", icon: "▶️" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        ipadYouTube: {
+          title: "유튜브",
+          helper: "원하는 메뉴를 선택하세요.",
+          hero: [],
+          items: [
+            { label: "버스 영상", nav: "busVideoList", image: "./images/bus.png" },
+            { label: "노래", nav: "ipadMusic", image: "./images/sing.png" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        ipadMusic: {
+          title: "노래",
+          helper: "원하는 콘텐츠를 선택하세요.",
+          hero: [],
+          items: [
+            { label: "뽀로로", nav: "pororoList", youtube: "pororo", image: "https://img.youtube.com/vi/NUb53dtqt6E/hqdefault.jpg" },
+            { label: "콩순이", nav: "kongsuniList", youtube: "kongsuni1", image: "https://img.youtube.com/vi/NUb53dtqt6E/hqdefault.jpg" },
+            { label: "타요", nav: "tayoList", youtube: "tayo1", image: "https://img.youtube.com/vi/Bks5WybVkQ0/hqdefault.jpg" },
+            { label: "베베핀", nav: "bebefinList", youtube: "bebefin1", image: "https://img.youtube.com/vi/ekr2nIex040/hqdefault.jpg" },
+            { label: "핑크퐁", nav: "pinkfongList", youtube: "pinkfong1", image: "https://img.youtube.com/vi/ekr2nIex040/hqdefault.jpg" },
+            { label: "가요", nav: "gayoList", youtube: "gayo1", image: "https://img.youtube.com/vi/ekr2nIex040/hqdefault.jpg" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        busVideoList: {
+          title: "버스 영상",
+          helper: "보고 싶은 버스 영상을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "버스 1", youtube: "bus1", playInApp: true },
+            { label: "버스 2", youtube: "bus2", playInApp: true },
+            { label: "버스 3", youtube: "bus3", playInApp: true },
+            { label: "버스 4", youtube: "bus4", playInApp: true },
+            { label: "버스 5", youtube: "bus5", playInApp: true },
+            { label: "버스 6", youtube: "bus6", playInApp: true }
+          ],
+          layout: "media",
+          showPlayer: false
+        },
+
+        pororoList: {
+          title: "뽀로로",
+          helper: "보고 싶은 뽀로로 영상을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "뽀로로 1", youtube: "pororo1", playInApp: true },
+            { label: "뽀로로 2", youtube: "pororo2", playInApp: true },
+            { label: "뽀로로 3", youtube: "pororo3", playInApp: true },
+            { label: "뽀로로 4", youtube: "pororo4", playInApp: true },
+            { label: "뽀로로 5", youtube: "pororo5", playInApp: true },
+            { label: "뽀로로 6", youtube: "pororo6", playInApp: true }
+          ],
+          layout: "media",
+          showPlayer: false
+        },
+
+        kongsuniList: {
+          title: "콩순이",
+          helper: "보고 싶은 콩순이 영상을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "콩순이 1", youtube: "kongsuni1", playInApp: true },
+            { label: "콩순이 2", youtube: "kongsuni2", playInApp: true },
+            { label: "콩순이 3", youtube: "kongsuni3", playInApp: true },
+            { label: "콩순이 4", youtube: "kongsuni4", playInApp: true },
+            { label: "콩순이 5", youtube: "kongsuni5", playInApp: true },
+            { label: "콩순이 6", youtube: "kongsuni6", playInApp: true }
+          ],
+          layout: "media",
+          showPlayer: false
+        },
+
+        tayoList: {
+          title: "타요",
+          helper: "보고 싶은 타요 영상을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "타요 1", youtube: "tayo1", playInApp: true },
+            { label: "타요 2", youtube: "tayo2", playInApp: true },
+            { label: "타요 3", youtube: "tayo3", playInApp: true },
+            { label: "타요 4", youtube: "tayo4", playInApp: true },
+            { label: "타요 5", youtube: "tayo5", playInApp: true },
+            { label: "타요 6", youtube: "tayo6", playInApp: true }
+          ],
+          layout: "media",
+          showPlayer: false
+        },
+
+        bebefinList: {
+          title: "베베핀",
+          helper: "보고 싶은 베베핀 영상을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "베베핀 1", youtube: "bebefin1", playInApp: true },
+            { label: "베베핀 2", youtube: "bebefin2", playInApp: true },
+            { label: "베베핀 3", youtube: "bebefin3", playInApp: true },
+            { label: "베베핀 4", youtube: "bebefin4", playInApp: true },
+            { label: "베베핀 5", youtube: "bebefin5", playInApp: true },
+            { label: "베베핀 6", youtube: "bebefin6", playInApp: true }
+          ],
+          layout: "media",
+          showPlayer: false
+        },
+
+        pinkfongList: {
+          title: "핑크퐁",
+          helper: "보고 싶은 핑크퐁 영상을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "핑크퐁 1", youtube: "pinkfong1", playInApp: true },
+            { label: "핑크퐁 2", youtube: "pinkfong2", playInApp: true },
+            { label: "핑크퐁 3", youtube: "pinkfong3", playInApp: true },
+            { label: "핑크퐁 4", youtube: "pinkfong4", playInApp: true },
+            { label: "핑크퐁 5", youtube: "pinkfong5", playInApp: true },
+            { label: "핑크퐁 6", youtube: "pinkfong6", playInApp: true }
+          ],
+          layout: "media",
+          showPlayer: false
+        },
+
+        gayoList: {
+          title: "가요",
+          helper: "듣고 싶은 가요를 선택하세요.",
+          hero: [],
+          items: [
+            { label: "가요 1", youtube: "gayo1", playInApp: true },
+            { label: "가요 2", youtube: "gayo2", playInApp: true },
+            { label: "가요 3", youtube: "gayo3", playInApp: true },
+            { label: "가요 4", youtube: "gayo4", playInApp: true },
+            { label: "가요 5", youtube: "gayo5", playInApp: true },
+            { label: "가요 6", youtube: "gayo6", playInApp: true }
+          ],
+          layout: "media",
+          showPlayer: false
+        },
+
+        youtubePlayer: {
+          title: "영상 재생",
+          helper: "영상을 보고 뒤로 가기로 돌아가세요.",
+          hero: [],
+          items: [],
+          layout: "detail",
+          showPlayer: true
+        },
+
+        meal: {
+          title: "밥 먹기",
+          helper: "원하는 것을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "밥" },
+            { label: "주스" },
+            { label: "물" },
+            { label: "고기" }
+          ],
+          layout: "detail"
+        },
+
+        toilet: {
+          title: "화장실",
+          helper: "원하는 것을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "양치하기", image: "./images/brush.png" },
+            { label: "샤워", image: "./images/shower.png" },
+            { label: "소변", image: "./images/pee.png" },
+            { label: "대변", image: "./images/poo.png" },
+            { label: "세수", image: "./images/wash_face.png" },
+            { label: "손씻기", image: "./images/wash_hands.png" }
+          ],
+          layout: "media",
+          showPlayer: false
+        },
+
+        outingHome: {
+          title: "외출하기",
+          helper: "사람, 장소, 이동수단을 선택할 수 있어요.",
+          hero: [
+            { label: "버스", image: "./images/outing.png" },
+            { label: "아빠차", image: "./images/dadcar.png" }
+          ],
+          items: [
+            { label: "사람 선택", nav: "outingPerson" },
+            { label: "장소 선택", nav: "outingPlace" },
+            { label: "이동수단 선택", nav: "outingTransport" }
+          ],
+          layout: "detail"
+        },
+
+        outingPerson: {
+          title: "사람 선택",
+          helper: "누가 함께 가나요?",
+          hero: [],
+          items: [
+            { label: "나", image: "./images/outing_person_me.png" },
+            { label: "엄마", image: "./images/outing_person_mom.png" },
+            { label: "아빠", image: "./images/outing_person_dad.png" },
+            { label: "활동보조 선생님", image: "./images/outing_person_activity_support.png" },
+            { label: "할아버지", image: "./images/outing_person_grandpa.png" },
+            { label: "할머니", image: "./images/outing_person_grandma.png" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        outingPlace: {
+          title: "장소 선택",
+          helper: "어디로 갈까요?",
+          hero: [],
+          items: [
+            { label: "학교", nav: "outingSchool", image: "./images/outing_school1.png" },
+            { label: "공원", image: "./images/outing_park1.png" },
+            { label: "마트", image: "./images/outing_mart1.png" },
+            { label: "빵집", image: "./images/outing_bakery.png" },
+            { label: "카페", image: "./images/outing_cafe.png" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        outingSchool: {
+          title: "학교",
+          helper: "어디로 갈까요? (더 보기는 「다음」)",
+          hero: [],
+          items: [
+            { label: "신발장", image: "./images/school_shoe_locker.png" },
+            { label: "엘리베이터", image: "./images/school_elevator.png" },
+            { label: "화장실", image: "./images/school_restroom.png" },
+            { label: "교실", image: "./images/school_classroom.png" },
+            { label: "담임선생님", image: "./images/school_homeroom_teacher.png" },
+            { label: "친구들", nav: "outingSchoolFriends", image: "./images/school_friends.png" },
+            { label: "다음", nav: "outingSchool_p2", image: "./images/study.png" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        outingSchoolFriends: {
+          title: "친구들",
+          helper: "친구를 선택하세요.",
+          hero: [],
+          items: [
+            { label: "건민", image: "./images/school_friends_건민.png" },
+            { label: "동하", image: "./images/school_friends_동하.png" },
+            { label: "승우", image: "./images/school_friends_승우.png" },
+            { label: "윤희", image: "./images/school_friends_윤희.png" },
+            { label: "윤희 2", image: "./images/school_friends_윤희1.png" },
+            { label: "하린", image: "./images/school_friends_하린.png" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        outingSchool_p2: {
+          title: "학교",
+          helper: "계속 선택하세요. (「이전」「다음」)",
+          hero: [],
+          items: [
+            { label: "교과실", image: "./images/school_subject_room.png" },
+            { label: "급식실", image: "./images/school_cafeteria.png" },
+            { label: "무한상상실", image: "./images/school_imagination_room.png" },
+            { label: "학교정원", image: "./images/school_garden.png" },
+            { label: "디지털액티브실", image: "./images/school_digital_active_room.png" },
+            { label: "체육관", image: "./images/school_gym.png" },
+            { label: "다음", nav: "outingSchool_p3", image: "./images/study.png" },
+            { label: "이전", nav: "outingSchool", image: "./images/study.png" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        outingSchool_p3: {
+          title: "학교",
+          helper: "마지막 항목이에요.",
+          hero: [],
+          items: [
+            { label: "보치아경기", image: "./images/school_boccia.png" },
+            { label: "이전", nav: "outingSchool_p2", image: "./images/study.png" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        outingTransport: {
+          title: "이동수단 선택",
+          helper: "어떻게 이동할까요?",
+          hero: [],
+          items: [
+            { label: "걸어서", image: "./images/transport_walk.png" },
+            { label: "자동차", image: "./images/transport_car.png" },
+            { label: "버스", image: "./images/transport_bus.png" },
+            { label: "지하철", image: "./images/transport_subway.png" },
+            { label: "자전거", image: "./images/transport_bike.png" }
+          ],
+          layout: "main",
+          showPlayer: false
+        }
+      }
+    };
+
+    const titleEl = document.getElementById("screenTitle");
+    const backBtn = document.getElementById("backButton");
+    const crumbEl = document.getElementById("breadcrumb");
+    const gridEl = document.getElementById("buttonGrid");
+    const appMainEl = document.querySelector("main.app");
+    const spotlightViewEl = document.getElementById("spotlightView");
+    const spotlightBtnEl = document.getElementById("spotlightButton");
+    const spotlightImgEl = document.getElementById("spotlightImage");
+    const helperEl = document.getElementById("helperText");
+    const heroEl = document.getElementById("heroRow");
+    const playerWrapEl = document.getElementById("playerWrap");
+    const playerEl = document.getElementById("youtubePlayer");
+    const openInYoutubeButton = document.getElementById("openInYoutubeButton");
+    const returnHintEl = document.getElementById("returnHint");
+
+    const navStack = [{ key: "main", label: "메인" }];
+    const outingSelection = {
+      persons: [],
+      place: null,
+      transport: null
+    };
+    let outingPickerMode = "person";
+    let selectedYoutube = "";
+    let preferredKoVoice = null;
+    let ttsWarmedUp = false;
+    const isAppleMobile = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    // Some videos block iframe embedding. Use direct YouTube open for reliability.
+    const useDirectYoutubeOpen = true;
+
+    function pickPreferredKoVoice() {
+      if (!("speechSynthesis" in window)) return null;
+      const voices = window.speechSynthesis.getVoices() || [];
+      const koVoices = voices.filter((v) => (v.lang || "").toLowerCase().startsWith("ko"));
+      if (!koVoices.length) return null;
+
+      const priorities = [/female/i, /woman/i, /여성/, /google/i, /premium|neural|natural/i];
+      for (const rule of priorities) {
+        const found = koVoices.find((v) => rule.test(v.name || "") || rule.test(v.voiceURI || ""));
+        if (found) return found;
+      }
+      return koVoices[0];
+    }
+
+    function speak(text) {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "ko-KR";
+      if (!preferredKoVoice) preferredKoVoice = pickPreferredKoVoice();
+      if (preferredKoVoice) u.voice = preferredKoVoice;
+      u.rate = 0.95;
+      u.pitch = 1.0;
+      window.speechSynthesis.speak(u);
+    }
+
+    function resetOutingSelection() {
+      outingSelection.persons = [];
+      outingSelection.place = null;
+      outingSelection.transport = null;
+    }
+
+    function selectAllOutingDefaults() {
+      const p = (DATA.screens.outingPerson?.items || []).slice(0, 3);
+      outingSelection.persons = p
+        .filter((it) => it && it.label)
+        .map((it) => ({ label: it.label, image: it.image || "" }));
+
+      const placeItems = DATA.screens.outingPlace?.items || [];
+      const school = placeItems.find((it) => it.label === "학교") || placeItems[0];
+      outingSelection.place = school ? { label: school.label, image: school.image || "" } : null;
+
+      const t = (DATA.screens.outingTransport?.items || []).find((it) => it.label === "버스") ||
+        (DATA.screens.outingTransport?.items || [])[0];
+      outingSelection.transport = t ? { label: t.label, image: t.image || "" } : null;
+    }
+
+    function warmupTTS() {
+      if (!("speechSynthesis" in window) || ttsWarmedUp) return;
+      ttsWarmedUp = true;
+      const warm = new SpeechSynthesisUtterance(" ");
+      warm.lang = "ko-KR";
+      if (!preferredKoVoice) preferredKoVoice = pickPreferredKoVoice();
+      if (preferredKoVoice) warm.voice = preferredKoVoice;
+      warm.volume = 0;
+      warm.rate = 1.0;
+      warm.pitch = 1.0;
+      window.speechSynthesis.speak(warm);
+      window.speechSynthesis.cancel();
+    }
+
+    function getYouTubeId(url) {
+      try {
+        const u = new URL(url);
+        if (u.hostname.includes("youtu.be")) {
+          return u.pathname.replace("/", "").trim();
+        }
+        return u.searchParams.get("v");
+      } catch (_e) {
+        return "";
+      }
+    }
+
+    function parseStartSeconds(url) {
+      try {
+        const u = new URL(url);
+        const t = u.searchParams.get("t");
+        if (!t) return 0;
+        if (/^\d+$/.test(t)) return Number(t);
+        // Support formats like 1m30s.
+        const m = t.match(/(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/);
+        if (!m) return 0;
+        const h = Number(m[1] || 0);
+        const min = Number(m[2] || 0);
+        const s = Number(m[3] || 0);
+        return h * 3600 + min * 60 + s;
+      } catch (_e) {
+        return 0;
+      }
+    }
+
+    function setPlayer(youtubeUrl) {
+      const id = getYouTubeId(youtubeUrl);
+      if (!id) return;
+      selectedYoutube = youtubeUrl;
+      const start = parseStartSeconds(youtubeUrl);
+      const startQuery = start > 0 ? `&start=${start}` : "";
+      playerEl.src = `https://www.youtube-nocookie.com/embed/${id}?playsinline=1&autoplay=1&rel=0&modestbranding=1${startQuery}`;
+    }
+
+    function openYoutubeDirect(url) {
+      if (!url) return;
+      // Always open in a new tab so AAC screen stays available.
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+
+    function currentKey() {
+      return navStack[navStack.length - 1]?.key || "main";
+    }
+
+    function pushScreen(key, label) {
+      navStack.push({ key, label });
+      selectedYoutube = "";
+    }
+
+    function popScreen() {
+      if (navStack.length > 1) navStack.pop();
+    }
+
+    function breadcrumbText() {
+      const parts = navStack
+        .filter((x) => x.key !== "main")
+        .map((x) => x.label);
+      if (!parts.length) return "";
+      return parts.join(" > ");
+    }
+
+    function resolveYoutube(item) {
+      if (!item.youtube) return "";
+      return DATA.youtube[item.youtube] || "";
+    }
+
+    function getThumbnail(youtubeUrl) {
+      const id = getYouTubeId(youtubeUrl);
+      if (!id) return "";
+      // Use a lighter thumbnail to reduce loading time on iPad.
+      return `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
+    }
+
+    function setupImageElement(img, eager = false) {
+      img.loading = eager ? "eager" : "lazy";
+      img.decoding = "async";
+      img.referrerPolicy = "no-referrer";
+      img.draggable = false;
+    }
+
+    const prefetchedImages = new Set();
+    function prefetchLocalImage(src) {
+      if (!src || !src.startsWith("./images/")) return;
+      if (prefetchedImages.has(src)) return;
+      prefetchedImages.add(src);
+      const im = new Image();
+      setupImageElement(im, true);
+      im.src = src;
+    }
+
+    function prefetchScreenImages(screenKey) {
+      const screen = DATA.screens[screenKey];
+      if (!screen) return;
+      (screen.hero || []).forEach((it) => prefetchLocalImage(it.image));
+      (screen.items || []).forEach((it) => prefetchLocalImage(it.image));
+      if (screen.spotlight && screen.spotlight.image) {
+        prefetchLocalImage(screen.spotlight.image);
+      }
+    }
+
+    /** 아이패드에서 탭 직후 그리드가 비어 보이지 않도록, 다음에 올 가능성이 큰 화면 PNG를 선로딩 */
+    function prefetchLikelyNextScreens(screenKey) {
+      if (screenKey === "outingPlace") {
+        prefetchScreenImages("outingSchool");
+      } else if (screenKey === "outingSchool") {
+        prefetchScreenImages("outingSchoolFriends");
+        prefetchScreenImages("outingSchool_p2");
+      } else if (screenKey === "outingSchool_p2") {
+        prefetchScreenImages("outingSchool_p3");
+      } else if (screenKey.startsWith("studyKnobPuzzle_")) {
+        const parts = screenKey.split("_");
+        if (parts.length === 2) {
+          for (let j = 1; j <= 6; j++) {
+            prefetchScreenImages(`${screenKey}_${j}`);
+          }
+        }
+      }
+    }
+
+    function renderHero(items) {
+      heroEl.innerHTML = "";
+      if (!items || !items.length) {
+        heroEl.style.display = "none";
+        return;
+      }
+      heroEl.style.display = "grid";
+      items.forEach((item) => {
+        const btn = document.createElement("button");
+        if (item.image) {
+          btn.className = "tile";
+          const img = document.createElement("img");
+          img.src = item.image;
+          img.alt = item.label;
+          const label = document.createElement("div");
+          label.className = "tile-label";
+          label.textContent = item.label;
+          btn.appendChild(img);
+          btn.appendChild(label);
+        } else {
+          btn.className = "btn hero";
+          btn.textContent = item.label;
+        }
+        btn.addEventListener("click", () => {
+          speak(item.label);
+        });
+        heroEl.appendChild(btn);
+      });
+    }
+
+    function renderButtons(items, layout) {
+      gridEl.innerHTML = "";
+      const isMain = layout === "main";
+      const isMedia = layout === "media";
+      gridEl.className = isMain ? "grid" : (isMedia ? "grid media" : "grid detail");
+
+      items.forEach((item, index) => {
+        const btn = document.createElement("button");
+        const yUrl = resolveYoutube(item);
+        if ((isMain && item.image) || (isMedia && (item.image || yUrl))) {
+          const isSmallNavButton = isMain && (item.label === "다음" || item.label === "이전");
+          btn.className = isSmallNavButton ? "tile tile-nav" : "tile";
+
+          if (!isSmallNavButton) {
+            const img = document.createElement("img");
+            img.src = item.image || getThumbnail(yUrl);
+            img.alt = item.label;
+            // Local PNG in ./images/ — always eager (Safari + lazy in grid can fail to paint).
+            const localImg = item.image && item.image.startsWith("./images/");
+            setupImageElement(img, index < 2 || !!localImg);
+            btn.appendChild(img);
+          }
+
+          const label = document.createElement("div");
+          label.className = "tile-label";
+          label.textContent = item.label;
+          btn.appendChild(label);
+          if (item.isSelected) {
+            btn.classList.add("selected");
+          }
+        } else if (isMain) {
+          btn.className = "tile";
+          const art = document.createElement("div");
+          art.className = "tile-art";
+          art.textContent = item.icon || (item.label.includes("버스") ? "🚌" : (item.label.includes("음악") || item.label.includes("노래")) ? "🎵" : item.label.includes("유튜브") ? "▶️" : "📌");
+          const label = document.createElement("div");
+          label.className = "tile-label";
+          label.textContent = item.label;
+          btn.appendChild(art);
+          btn.appendChild(label);
+          if (item.isSelected) {
+            btn.classList.add("selected");
+          }
+        } else {
+          btn.className = isMain ? "btn main" : "btn";
+          if (!isMain && yUrl && yUrl === selectedYoutube) {
+            btn.classList.add("selected");
+          }
+          btn.textContent = item.label;
+        }
+        btn.addEventListener("click", () => {
+          if (item.action === "setOutingMode") {
+            outingPickerMode = item.mode;
+            speak(item.label);
+            render();
+            return;
+          }
+          if (item.action === "outingSelectAll") {
+            selectAllOutingDefaults();
+            speak("모두 선택");
+            render();
+            return;
+          }
+          if (item.action === "outingReset") {
+            resetOutingSelection();
+            speak("리셋");
+            render();
+            return;
+          }
+          if (item.action === "selectOuting") {
+            if (item.bucket === "persons") {
+              const exists = outingSelection.persons.some((p) => p.label === item.label);
+              if (exists) {
+                outingSelection.persons = outingSelection.persons.filter((p) => p.label !== item.label);
+              } else {
+                if (outingSelection.persons.length >= 3) {
+                  speak("사람은 세 명까지 선택할 수 있어요.");
+                  return;
+                }
+                outingSelection.persons = [...outingSelection.persons, { label: item.label, image: item.image || "" }];
+              }
+              speak(item.label);
+              render();
+              return;
+            }
+
+            outingSelection[item.bucket] = { label: item.label, image: item.image || "" };
+            speak(item.label);
+            if (item.nav) {
+              pushScreen(item.nav, item.label);
+              render();
+              return;
+            }
+            render();
+            return;
+          }
+
+          const key = currentKey();
+
+          // (구버전 호환) 외출하기 선택 화면에서도 저장되도록 유지
+          if (key === "outingPerson") {
+            if (!outingSelection.persons.some((p) => p.label === item.label)) {
+              if (outingSelection.persons.length < 3) {
+                outingSelection.persons = [...outingSelection.persons, { label: item.label, image: item.image || "" }];
+              }
+            }
+          } else if (key === "outingPlace") {
+            outingSelection.place = { label: item.label, image: item.image || "" };
+          } else if (key === "outingTransport") {
+            outingSelection.transport = { label: item.label, image: item.image || "" };
+          }
+
+          speak(item.label);
+          // TTS가 먼저 시작되도록 짧은 지연 뒤 화면 전환/링크 동작
+          window.setTimeout(() => {
+            if (item.nav) {
+              pushScreen(item.nav, item.label);
+              render();
+              return;
+            }
+            if (yUrl) {
+              if (item.playInApp && !useDirectYoutubeOpen) {
+                pushScreen("youtubePlayer", item.label);
+                setPlayer(yUrl);
+                render();
+              } else {
+                const screen = DATA.screens[currentKey()] || {};
+                if (screen.showPlayer) {
+                  setPlayer(yUrl);
+                  render();
+                } else {
+                  openYoutubeDirect(yUrl);
+                }
+              }
+            }
+          }, 70);
+        });
+        if (item.nav) {
+          btn.addEventListener("pointerdown", () => {
+            prefetchScreenImages(item.nav);
+          }, { passive: true });
+        }
+        gridEl.appendChild(btn);
+      });
+    }
+
+    function render() {
+      const key = currentKey();
+      const screen = DATA.screens[key] || DATA.screens.main;
+      const isMain = key === "main";
+      backBtn.style.display = isMain ? "none" : "inline-flex";
+
+      titleEl.textContent = screen.title || "AAC";
+      helperEl.textContent = screen.helper || "";
+
+      const crumb = breadcrumbText();
+      crumbEl.textContent = crumb;
+      crumbEl.style.display = crumb ? "block" : "none";
+
+      const heroItems = screen.hero || [];
+      renderHero(heroItems);
+      helperEl.textContent = screen.helper || "";
+
+      const crumb = breadcrumbText();
+      crumbEl.textContent = crumb;
+      crumbEl.style.display = crumb ? "block" : "none";
+
+      renderHero(screen.hero);
+
+      const wantsPlayer = !!screen.showPlayer;
+      if (wantsPlayer) {
+        playerWrapEl.style.display = "block";
+        openInYoutubeButton.style.display = "inline-flex";
+        const screenYoutubeUrls = (screen.items || [])
+          .map((x) => resolveYoutube(x))
+          .filter(Boolean);
+        if (screenYoutubeUrls.length && selectedYoutube && !screenYoutubeUrls.includes(selectedYoutube)) {
+          selectedYoutube = "";
+        }
+        const firstYoutubeUrl = screenYoutubeUrls[0] || "";
+        if (!selectedYoutube && firstYoutubeUrl) {
+          setPlayer(firstYoutubeUrl);
+        }
+      } else {
+        playerWrapEl.style.display = "none";
+        openInYoutubeButton.style.display = "none";
+        playerEl.src = "";
+      }
+
+      const isSpotlight = screen.layout === "spotlight" && screen.spotlight && screen.spotlight.image;
+      if (isSpotlight) {
+        appMainEl.classList.add("app--spotlight");
+        spotlightViewEl.style.display = "flex";
+        gridEl.style.display = "none";
+        gridEl.innerHTML = "";
+        spotlightImgEl.src = screen.spotlight.image;
+        spotlightImgEl.alt = screen.spotlight.label || screen.title || "";
+        setupImageElement(spotlightImgEl, true);
+        const spotLabel = screen.spotlight.label || screen.title || "";
+        spotlightBtnEl.setAttribute("aria-label", `${spotLabel}, 눌러서 읽기`);
+        spotlightBtnEl.onclick = () => speak(spotLabel);
+      } else {
+        appMainEl.classList.remove("app--spotlight");
+        spotlightViewEl.style.display = "none";
+        spotlightBtnEl.onclick = null;
+        gridEl.style.display = "";
+        renderButtons(screen.items || [], screen.layout || (isMain ? "main" : "detail"));
+      }
+
+      requestAnimationFrame(() => {
+        prefetchLikelyNextScreens(key);
+      });
+    }
+
+    backBtn.addEventListener("click", () => {
+      speak("뒤로 가기");
+      popScreen();
+      selectedYoutube = "";
+      render();
+    });
+
+    openInYoutubeButton.addEventListener("click", () => {
+      if (!selectedYoutube) return;
+      speak("유튜브에서 열기");
+      openYoutubeDirect(selectedYoutube);
+    });
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        preferredKoVoice = pickPreferredKoVoice();
+      };
+      preferredKoVoice = pickPreferredKoVoice();
+    }
+
+    window.addEventListener("pointerdown", warmupTTS, { once: true });
+    window.addEventListener("touchstart", warmupTTS, { once: true });
+    if (isAppleMobile) {
+      returnHintEl.style.display = "block";
+    }
+
+    render();
+  
