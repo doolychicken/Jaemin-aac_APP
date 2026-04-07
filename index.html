@@ -98,6 +98,32 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
+    /* 장소 → 학교 → 친구들: 한 화면에 여러 명이 보이도록 작은 타일 */
+    .grid.grid-friends {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      max-width: 640px;
+      margin-inline: auto;
+    }
+    .grid.grid-friends .tile {
+      width: 100%;
+      max-width: none;
+      min-width: 0;
+      aspect-ratio: 1 / 1;
+      padding: 6px;
+      gap: 4px;
+      border-radius: 16px;
+    }
+    .grid.grid-friends .tile img {
+      object-fit: cover;
+      border-radius: 12px;
+    }
+    .grid.grid-friends .tile-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      line-height: 1.05;
+    }
+
     .hero {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -234,14 +260,23 @@
     }
 
     @media (min-width: 768px) {
-      .grid:not(.detail):not(.media) {
+      .grid:not(.detail):not(.media):not(.grid-friends) {
         grid-template-columns: repeat(3, minmax(0, 1fr));
         max-width: 960px;
         margin-inline: auto;
       }
 
-      .grid:not(.detail):not(.media) .tile {
+      .grid:not(.detail):not(.media):not(.grid-friends) .tile {
         width: min(30vw, 260px);
+      }
+
+      .grid.grid-friends {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        max-width: 520px;
+        gap: 10px;
+      }
+      .grid.grid-friends .tile {
+        padding: 8px;
       }
     }
 
@@ -856,13 +891,14 @@
           helper: "친구를 선택하세요.",
           hero: [],
           items: [
-            { label: "친구 1", image: "./images/school_friends.png" },
-            { label: "친구 2", image: "./images/school_friends.png" },
-            { label: "친구 3", image: "./images/school_friends.png" },
-            { label: "친구 4", image: "./images/school_friends.png" },
-            { label: "친구 5", image: "./images/school_friends.png" }
+            { label: "건민", image: "./images/school_friends_건민.png" },
+            { label: "동하", image: "./images/school_friends_동하.png" },
+            { label: "승우", image: "./images/school_friends_승우.png" },
+            { label: "윤희", image: "./images/school_friends_윤희.png" },
+            { label: "윤희 2", image: "./images/school_friends_윤희1.png" },
+            { label: "하린", image: "./images/school_friends_하린.png" }
           ],
-          layout: "main",
+          layout: "friends",
           showPlayer: false
         },
 
@@ -1108,14 +1144,15 @@
     function renderButtons(items, layout) {
       gridEl.innerHTML = "";
       const isMain = layout === "main";
+      const isFriends = layout === "friends";
       const isMedia = layout === "media";
-      gridEl.className = isMain ? "grid" : (isMedia ? "grid media" : "grid detail");
+      gridEl.className = isFriends ? "grid grid-friends" : (isMain ? "grid" : (isMedia ? "grid media" : "grid detail"));
 
       items.forEach((item, index) => {
         const btn = document.createElement("button");
         const yUrl = resolveYoutube(item);
-        if ((isMain && item.image) || (isMedia && (item.image || yUrl))) {
-          const isSmallNavButton = isMain && (item.label === "다음" || item.label === "이전");
+        if (((isMain || isFriends) && item.image) || (isMedia && (item.image || yUrl))) {
+          const isSmallNavButton = (isMain || isFriends) && (item.label === "다음" || item.label === "이전");
           btn.className = isSmallNavButton ? "tile tile-nav" : "tile";
 
           if (!isSmallNavButton) {
