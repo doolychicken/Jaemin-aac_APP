@@ -212,46 +212,78 @@
 
     .btn.date-sentence {
       grid-column: 1 / -1;
-      font-size: clamp(1.1rem, 3.5vw, 1.6rem);
+      font-size: clamp(1.15rem, 4vw, 1.7rem);
       font-weight: 700;
-      letter-spacing: 0.02em;
-      min-height: 76px;
+      letter-spacing: 0.03em;
+      min-height: 80px;
       white-space: normal;
       line-height: 1.3;
+      background: linear-gradient(135deg, #e8f0fe, #d2e3fc);
+      color: #1a237e;
+      border: 2px solid #90caf9;
     }
 
     .tile.date-tile {
       width: 100%;
       aspect-ratio: 1 / 1;
+      border: none;
+      background: transparent;
+      padding: 6px;
     }
 
-    .tile.date-tile--empty .tile-art,
-    .tile.date-tile--empty .tile-label {
-      opacity: 0.4;
+    /* 원형 그라디언트 아이콘 */
+    .date-art {
+      width: 62%;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1.6rem, 6vw, 2.8rem);
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+      transition: transform 0.12s ease;
+    }
+    .tile.date-tile:active .date-art { transform: scale(0.93); }
+
+    .date-art-month   { background: linear-gradient(135deg, #5c9cf5, #1a56db); }
+    .date-art-day     { background: linear-gradient(135deg, #34d399, #059669); }
+    .date-art-weekday { background: linear-gradient(135deg, #c084fc, #7c3aed); }
+    .date-art-weather { background: linear-gradient(135deg, #fbbf24, #d97706); font-size: clamp(1.8rem, 7vw, 3rem); }
+    .date-art-empty   { background: linear-gradient(135deg, #e2e8f0, #cbd5e1); color: #94a3b8;
+                        box-shadow: none; border: 2.5px dashed #cbd5e1; }
+
+    .tile.date-tile .tile-label {
+      font-size: clamp(0.85rem, 2.8vw, 1.1rem);
+      font-weight: 600;
+      color: #334155;
+      margin-top: 6px;
     }
 
-    .tile.date-tile-weather {
-      border-color: var(--accent);
-      background: #fffbf0;
-    }
+    .tile.date-tile-weather .tile-label { color: #92400e; }
 
     .btn.date-guardian-btn {
       grid-column: 1 / -1;
-      font-size: 0.9rem;
-      opacity: 0.5;
-      min-height: 52px;
-      margin-top: 4px;
+      font-size: 0.88rem;
+      opacity: 0.45;
+      min-height: 50px;
+      margin-top: 2px;
+      border-style: dashed;
     }
 
     @media (min-width: 600px) {
       .grid.date-home {
         grid-template-columns: repeat(4, 1fr);
       }
-      .btn.date-sentence {
-        grid-column: 1 / -1;
-      }
+      .btn.date-sentence,
       .btn.date-guardian-btn {
         grid-column: 1 / -1;
+      }
+      .date-art {
+        width: 58%;
       }
     }
 
@@ -1880,22 +1912,26 @@
       gridEl.appendChild(sentenceBtn);
 
       // ── 개별 날짜 타일 ──
+      // artChar: 원형 안에 크게 표시할 글자
+      const monthArt   = dateSelection.month   ? String(dateSelection.month)          : "?";
+      const dayArt     = dateSelection.day     ? String(dateSelection.day)            : "?";
+      const weekdayArt = dateSelection.weekday ? dateSelection.weekday.charAt(0)      : "?";
+
       const tiles = [
-        { label: month,                isSet: !!dateSelection.month,   emoji: "📅" },
-        { label: day,                  isSet: !!dateSelection.day,     emoji: "🔢" },
-        { label: weekday,              isSet: !!dateSelection.weekday, emoji: "📆" },
-        { label: weather || "날씨 선택", isSet: !!weather,              emoji: weatherEmoji, isWeather: true }
+        { label: month,                isSet: !!dateSelection.month,   artChar: monthArt,   artClass: "date-art-month"   },
+        { label: day,                  isSet: !!dateSelection.day,     artChar: dayArt,     artClass: "date-art-day"     },
+        { label: weekday,              isSet: !!dateSelection.weekday, artChar: weekdayArt, artClass: "date-art-weekday" },
+        { label: weather || "날씨 선택", isSet: !!weather,              artChar: weatherEmoji, artClass: "date-art-weather", isWeather: true }
       ];
 
       tiles.forEach((tile) => {
         const btn = document.createElement("button");
         btn.className = "tile date-tile" +
-          (tile.isSet ? "" : " date-tile--empty") +
           (tile.isWeather ? " date-tile-weather" : "");
 
         const art = document.createElement("div");
-        art.className = "tile-art";
-        art.textContent = tile.emoji;
+        art.className = "date-art " + (tile.isSet ? tile.artClass : "date-art-empty");
+        art.textContent = tile.artChar;
 
         const lbl = document.createElement("div");
         lbl.className = "tile-label";
