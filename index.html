@@ -1020,6 +1020,21 @@
           showPlayer: false
         },
 
+        dateWeatherPicker: {
+          title: "날씨 선택",
+          helper: "오늘 날씨를 선택하세요.",
+          hero: [],
+          items: [
+            { label: "맑음" },
+            { label: "흐림" },
+            { label: "비" },
+            { label: "눈" },
+            { label: "바람" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
         studyHome: {
           title: "공부하기",
           helper: "카테고리를 선택하세요. 라벨·종류 목록은 스크립트 상단 buildStudyScreensMap의 defs에서 바꿀 수 있어요.",
@@ -1778,8 +1793,13 @@
           btn.textContent = info.label;
           btn.addEventListener("click", () => {
             speak(info.label.replace(/\s*\(.+\)$/, ""));
-            datePlannerMode = info.mode;
-            render();
+            if (info.mode === "weather") {
+              pushScreen("dateWeatherPicker", "날씨 선택");
+              render();
+            } else {
+              datePlannerMode = info.mode;
+              render();
+            }
           });
           gridEl.appendChild(btn);
         });
@@ -1793,8 +1813,6 @@
         options = Array.from({ length: 30 }, (_, i) => ({ label: `${i + 1}일`, value: i + 1 }));
       } else if (datePlannerMode === "weekday") {
         options = WEEKDAY_OPTIONS.map((x) => ({ label: x, value: x }));
-      } else if (datePlannerMode === "weather") {
-        options = WEATHER_OPTIONS.map((x) => ({ label: x, value: x }));
       }
 
       options.forEach((opt) => {
@@ -1803,8 +1821,7 @@
         const selected =
           (datePlannerMode === "month" && dateSelection.month === opt.value) ||
           (datePlannerMode === "day" && dateSelection.day === opt.value) ||
-          (datePlannerMode === "weekday" && dateSelection.weekday === opt.value) ||
-          (datePlannerMode === "weather" && dateSelection.weather === opt.value);
+          (datePlannerMode === "weekday" && dateSelection.weekday === opt.value);
         if (selected) btn.classList.add("selected");
         btn.textContent = opt.label;
         btn.addEventListener("click", () => {
@@ -1812,7 +1829,6 @@
           if (datePlannerMode === "month") dateSelection.month = opt.value;
           if (datePlannerMode === "day") dateSelection.day = opt.value;
           if (datePlannerMode === "weekday") dateSelection.weekday = opt.value;
-          if (datePlannerMode === "weather") dateSelection.weather = opt.value;
           datePlannerMode = "";
           render();
         });
@@ -1917,6 +1933,13 @@
           btn.textContent = item.label;
         }
         btn.addEventListener("click", () => {
+          if (currentKey() === "dateWeatherPicker") {
+            dateSelection.weather = item.label;
+            speak(item.label);
+            popScreen();
+            render();
+            return;
+          }
           speak(item.label);
           // TTS가 먼저 시작되도록 짧은 지연 뒤 화면 전환/링크 동작
           window.setTimeout(() => {
