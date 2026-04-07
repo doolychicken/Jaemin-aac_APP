@@ -365,6 +365,7 @@
     <button id="openInYoutubeButton" class="back-btn" style="display:none; align-self:flex-start;">유튜브에서 열기</button>
 
     <p id="helperText" class="muted">버튼을 누르면 음성으로 읽어줍니다.</p>
+    <pre id="debugError" class="muted" style="display:none; white-space:pre-wrap; border:1px dashed #fca5a5; background:#fff; padding:10px; border-radius:12px;"></pre>
     <section id="heroRow" class="hero" style="display:none;"></section>
     <section id="spotlightView" class="spotlight" style="display:none;" aria-label="선택한 그림">
       <button type="button" id="spotlightButton" class="spotlight-button">
@@ -1035,6 +1036,7 @@
     const spotlightViewEl = document.getElementById("spotlightView");
     const spotlightBtnEl = document.getElementById("spotlightButton");
     const spotlightImgEl = document.getElementById("spotlightImage");
+    const debugErrEl = document.getElementById("debugError");
     const helperEl = document.getElementById("helperText");
     const heroEl = document.getElementById("heroRow");
     const playerWrapEl = document.getElementById("playerWrap");
@@ -1512,7 +1514,25 @@
       returnHintEl.style.display = "block";
     }
 
-    render();
+    window.addEventListener("error", (e) => {
+      try {
+        const msg = e?.error?.stack || e?.message || String(e);
+        if (debugErrEl) {
+          debugErrEl.style.display = "block";
+          debugErrEl.textContent = `오류가 발생했어요:\\n${msg}`;
+        }
+      } catch (_err) {}
+    });
+
+    try {
+      render();
+    } catch (e) {
+      const msg = e?.stack || String(e);
+      if (debugErrEl) {
+        debugErrEl.style.display = "block";
+        debugErrEl.textContent = `오류가 발생했어요:\\n${msg}`;
+      }
+    }
   </script>
 </body>
 </html>
