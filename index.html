@@ -63,9 +63,9 @@
       padding: 0;
       margin: 0;
       cursor: pointer;
-      width: 100%;
+      width: min(84vw, 540px); /* 메인 타일(42vw/270)의 2배 */
       max-width: 100%;
-      max-height: calc(100dvh - 200px);
+      aspect-ratio: 1 / 1;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -79,20 +79,17 @@
 
     .spotlight-button img {
       display: block;
-      max-width: 100%;
-      width: auto;
-      height: auto;
-      max-height: calc(100dvh - 200px);
-      object-fit: contain;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       border-radius: 18px;
       box-shadow: 0 16px 48px rgba(15, 23, 42, 0.14);
       background: #fff;
     }
 
     @media (min-width: 768px) {
-      .spotlight-button,
-      .spotlight-button img {
-        max-height: calc(100dvh - 220px);
+      .spotlight-button {
+        width: min(60vw, 520px); /* 메인 타일(30vw/260)의 2배 */
       }
     }
 
@@ -490,10 +487,41 @@
           title: sub.label,
           helper: "원하는 항목을 선택하세요.",
           hero: [],
-          items,
+          items: items.map((row, j) => ({
+            label: row.label,
+            nav: `${k}_${j + 1}`,
+            image: row.image
+          })),
           layout: "main",
           showPlayer: false
         };
+        items.forEach((row, j) => {
+          const leafKey = `${k}_${j + 1}`;
+          const isBlankForNumShape =
+            (sub.label === "숫자" && j >= 3) ||
+            (sub.label === "모양" && j >= 2);
+          rest[leafKey] = isBlankForNumShape
+            ? {
+              title: row.label,
+              helper: "",
+              hero: [],
+              items: [],
+              layout: "empty",
+              showPlayer: false
+            }
+            : {
+              title: row.label,
+              helper: "그림을 누르면 읽어 줘요.",
+              hero: [],
+              items: [],
+              layout: "spotlight",
+              spotlight: {
+                image: row.image,
+                label: row.label
+              },
+              showPlayer: false
+            };
+        });
       });
 
       defs.forEach((d) => {
@@ -1302,6 +1330,7 @@
       }
 
       const isSpotlight = screen.layout === "spotlight" && screen.spotlight && screen.spotlight.image;
+      const isEmpty = screen.layout === "empty";
       if (isSpotlight) {
         appMainEl.classList.add("app--spotlight");
         spotlightViewEl.style.display = "flex";
@@ -1313,6 +1342,12 @@
         const spotLabel = screen.spotlight.label || screen.title || "";
         spotlightBtnEl.setAttribute("aria-label", `${spotLabel}, 눌러서 읽기`);
         spotlightBtnEl.onclick = () => speak(spotLabel);
+      } else if (isEmpty) {
+        appMainEl.classList.add("app--spotlight");
+        spotlightViewEl.style.display = "none";
+        spotlightBtnEl.onclick = null;
+        gridEl.style.display = "none";
+        gridEl.innerHTML = "";
       } else {
         appMainEl.classList.remove("app--spotlight");
         spotlightViewEl.style.display = "none";
