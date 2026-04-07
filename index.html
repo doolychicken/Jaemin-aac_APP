@@ -295,25 +295,29 @@
         { label: "애완동물", image: "./images/stickerbook_pet.png" },
         { label: "모양.색깔", image: "./images/stickerbook_shape.png" }
       ];
+      const knobKinds = [
+        { label: "숫자", image: "./images/knobpuzzle_numbers.png" },
+        { label: "모양", image: "./images/knobpuzzle_shapes2.png" },
+        { label: "과일", image: "./images/knobpuzzle_fruits.png" },
+        { label: "탈것", image: "./images/knobpuzzle_vehicles.png" }
+      ];
       const defs = [
-        {
-          key: "studyKnobPuzzle",
-          label: "꼭지퍼즐",
-          subs: ["꼭지퍼즐 ①", "꼭지퍼즐 ②", "꼭지퍼즐 ③", "꼭지퍼즐 ④", "꼭지퍼즐 ⑤", "꼭지퍼즐 ⑥"]
-        },
         {
           key: "studyPeg",
           label: "페그꼽기",
+          studyTileImage: "./images/study_pegboard.png",
           subs: ["페그꼽기 ①", "페그꼽기 ②", "페그꼽기 ③", "페그꼽기 ④", "페그꼽기 ⑤", "페그꼽기 ⑥"]
         },
         {
           key: "studySoundCard",
           label: "사운드북 카드",
+          studyTileImage: "./images/study_soundbook_card.png",
           subs: ["사운드북 카드 ①", "사운드북 카드 ②", "사운드북 카드 ③", "사운드북 카드 ④", "사운드북 카드 ⑤", "사운드북 카드 ⑥"]
         },
         {
           key: "studyColorPencil",
           label: "색연필",
+          studyTileImage: "./images/study_color_pencil.png",
           subs: ["색연필 ①", "색연필 ②", "색연필 ③", "색연필 ④", "색연필 ⑤", "색연필 ⑥"]
         },
         {
@@ -324,11 +328,12 @@
       ];
       const rest = {};
       const homeItems = [
-        { label: "스티커북", nav: "studySticker", image: "./images/study.png" },
+        { label: "스티커북", nav: "studySticker", image: "./images/stickerbook_mart.png" },
+        { label: "꼭지퍼즐", nav: "studyKnobPuzzle", image: "./images/knobpuzzle_fruits.png" },
         ...defs.map((d) => ({
           label: d.label,
           nav: d.key,
-          image: "./images/study.png"
+          image: d.studyTileImage || "./images/study.png"
         }))
       ];
 
@@ -374,6 +379,56 @@
             label: `${sub.label} · ${j + 1}번`,
             image: sub.image
           })),
+          layout: "main",
+          showPlayer: false
+        };
+      });
+
+      rest.studyKnobPuzzle = {
+        title: "꼭지퍼즐",
+        helper: "원하는 종류를 선택하세요.",
+        hero: [],
+        items: knobKinds.map((sub, i) => ({
+          label: sub.label,
+          nav: `studyKnobPuzzle_${i + 1}`,
+          image: sub.image
+        })),
+        layout: "main",
+        showPlayer: false
+      };
+
+      knobKinds.forEach((sub, i) => {
+        const k = `studyKnobPuzzle_${i + 1}`;
+        let items;
+        if (sub.label === "숫자") {
+          items = [
+            { label: `${sub.label} · 1번`, image: "./images/knobpuzzle_numbers.png" },
+            { label: `${sub.label} · 2번`, image: "./images/knobpuzzle_numbers2.png" },
+            { label: `${sub.label} · 3번`, image: "./images/knobpuzzle_numbers3.png" },
+            { label: `${sub.label} · 4번`, image: "./images/knobpuzzle_numbers.png" },
+            { label: `${sub.label} · 5번`, image: "./images/knobpuzzle_numbers2.png" },
+            { label: `${sub.label} · 6번`, image: "./images/knobpuzzle_numbers3.png" }
+          ];
+        } else if (sub.label === "모양") {
+          items = [
+            { label: `${sub.label} · 1번`, image: "./images/knobpuzzle_shapes2.png" },
+            { label: `${sub.label} · 2번`, image: "./images/knobpuzzle_shapes.png" },
+            { label: `${sub.label} · 3번`, image: "./images/knobpuzzle_shapes2.png" },
+            { label: `${sub.label} · 4번`, image: "./images/knobpuzzle_shapes.png" },
+            { label: `${sub.label} · 5번`, image: "./images/knobpuzzle_shapes2.png" },
+            { label: `${sub.label} · 6번`, image: "./images/knobpuzzle_shapes.png" }
+          ];
+        } else {
+          items = Array.from({ length: 6 }, (_, j) => ({
+            label: `${sub.label} · ${j + 1}번`,
+            image: sub.image
+          }));
+        }
+        rest[k] = {
+          title: sub.label,
+          helper: "원하는 항목을 선택하세요.",
+          hero: [],
+          items,
           layout: "main",
           showPlayer: false
         };
@@ -471,9 +526,66 @@
             { label: "화장실", nav: "toilet", image: "./images/toilet.png" },
             { label: "외출하기", nav: "outingHome", image: "./images/outing.png" },
             { label: "공부하기", nav: "studyHome", image: "./images/study.png" },
-            { label: "휴식", icon: "🛋️" }
+            { label: "휴식", icon: "🛋️" },
+            { label: "다음", nav: "main_p2", image: "./images/study.png" }
           ],
           layout: "main"
+        },
+
+        main_p2: {
+          title: "메인 화면 (2)",
+          helper: "추가 카테고리를 선택하세요.",
+          hero: [],
+          items: [
+            { label: "스케줄표", nav: "scheduleHome", icon: "📅" },
+            { label: "과목", nav: "subjectHome", icon: "📚" },
+            { label: "날짜", nav: "dateHome", icon: "📆" },
+            { label: "이전", nav: "main", image: "./images/study.png" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        scheduleHome: {
+          title: "스케줄표",
+          helper: "스케줄 관련 항목을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "오늘 일정" },
+            { label: "내일 일정" },
+            { label: "이번 주" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        subjectHome: {
+          title: "과목",
+          helper: "과목을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "국어" },
+            { label: "수학" },
+            { label: "체육" },
+            { label: "음악" },
+            { label: "미술" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        dateHome: {
+          title: "날짜",
+          helper: "날짜/요일을 말해보세요.",
+          hero: [],
+          items: [
+            { label: "오늘은" },
+            { label: "몇 월" },
+            { label: "몇 일" },
+            { label: "무슨 요일" }
+          ],
+          layout: "main",
+          showPlayer: false
         },
 
         studyHome: {
@@ -678,16 +790,33 @@
 
         outingHome: {
           title: "외출하기",
-          helper: "장소와 이동수단을 선택할 수 있어요.",
+          helper: "사람, 장소, 이동수단을 선택할 수 있어요.",
           hero: [
             { label: "버스", image: "./images/outing.png" },
             { label: "아빠차", image: "./images/dadcar.png" }
           ],
           items: [
+            { label: "사람 선택", nav: "outingPerson" },
             { label: "장소 선택", nav: "outingPlace" },
             { label: "이동수단 선택", nav: "outingTransport" }
           ],
           layout: "detail"
+        },
+
+        outingPerson: {
+          title: "사람 선택",
+          helper: "누가 함께 가나요?",
+          hero: [],
+          items: [
+            { label: "나", image: "./images/outing_person_me.png" },
+            { label: "엄마", image: "./images/outing_person_mom.png" },
+            { label: "아빠", image: "./images/outing_person_dad.png" },
+            { label: "활동보조 선생님", image: "./images/outing_person_activity_support.png" },
+            { label: "할아버지", image: "./images/outing_person_grandpa.png" },
+            { label: "할머니", image: "./images/outing_person_grandma.png" }
+          ],
+          layout: "main",
+          showPlayer: false
         },
 
         outingPlace: {
@@ -695,11 +824,76 @@
           helper: "어디로 갈까요?",
           hero: [],
           items: [
-            { label: "산책" },
-            { label: "학교" },
-            { label: "마트" }
+            { label: "학교", nav: "outingSchool", image: "./images/outing_school1.png" },
+            { label: "공원", image: "./images/outing_park1.png" },
+            { label: "마트", image: "./images/outing_mart1.png" },
+            { label: "빵집", image: "./images/outing_bakery.png" },
+            { label: "카페", image: "./images/outing_cafe.png" }
           ],
-          layout: "detail"
+          layout: "main",
+          showPlayer: false
+        },
+
+        outingSchool: {
+          title: "학교",
+          helper: "어디로 갈까요? (더 보기는 「다음」)",
+          hero: [],
+          items: [
+            { label: "신발장", image: "./images/school_shoe_locker.png" },
+            { label: "엘리베이터", image: "./images/school_elevator.png" },
+            { label: "화장실", image: "./images/school_restroom.png" },
+            { label: "교실", image: "./images/school_classroom.png" },
+            { label: "담임선생님", image: "./images/school_homeroom_teacher.png" },
+            { label: "친구들", nav: "outingSchoolFriends", image: "./images/school_friends.png" },
+            { label: "다음", nav: "outingSchool_p2", image: "./images/study.png" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        outingSchoolFriends: {
+          title: "친구들",
+          helper: "친구를 선택하세요.",
+          hero: [],
+          items: [
+            { label: "친구 1", image: "./images/school_friends.png" },
+            { label: "친구 2", image: "./images/school_friends.png" },
+            { label: "친구 3", image: "./images/school_friends.png" },
+            { label: "친구 4", image: "./images/school_friends.png" },
+            { label: "친구 5", image: "./images/school_friends.png" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        outingSchool_p2: {
+          title: "학교",
+          helper: "계속 선택하세요. (「이전」「다음」)",
+          hero: [],
+          items: [
+            { label: "교과실", image: "./images/school_subject_room.png" },
+            { label: "급식실", image: "./images/school_cafeteria.png" },
+            { label: "무한상상실", image: "./images/school_imagination_room.png" },
+            { label: "학교정원", image: "./images/school_garden.png" },
+            { label: "디지털액티브실", image: "./images/school_digital_active_room.png" },
+            { label: "체육관", image: "./images/school_gym.png" },
+            { label: "다음", nav: "outingSchool_p3", image: "./images/study.png" },
+            { label: "이전", nav: "outingSchool", image: "./images/study.png" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        outingSchool_p3: {
+          title: "학교",
+          helper: "마지막 항목이에요.",
+          hero: [],
+          items: [
+            { label: "보치아경기", image: "./images/school_boccia.png" },
+            { label: "이전", nav: "outingSchool_p2", image: "./images/study.png" }
+          ],
+          layout: "main",
+          showPlayer: false
         },
 
         outingTransport: {
@@ -707,14 +901,14 @@
           helper: "어떻게 이동할까요?",
           hero: [],
           items: [
-            { label: "버스" },
-            { label: "지하철" },
-            { label: "도보" },
-            { label: "아빠차" },
-            { label: "유모차" },
-            { label: "장애인콜택시" }
+            { label: "걸어서", image: "./images/transport_walk.png" },
+            { label: "자동차", image: "./images/transport_car.png" },
+            { label: "버스", image: "./images/transport_bus.png" },
+            { label: "지하철", image: "./images/transport_subway.png" },
+            { label: "자전거", image: "./images/transport_bike.png" }
           ],
-          layout: "detail"
+          layout: "main",
+          showPlayer: false
         }
       }
     };
@@ -864,6 +1058,23 @@
       img.draggable = false;
     }
 
+    const prefetchedImages = new Set();
+    function prefetchLocalImage(src) {
+      if (!src || !src.startsWith("./images/")) return;
+      if (prefetchedImages.has(src)) return;
+      prefetchedImages.add(src);
+      const im = new Image();
+      setupImageElement(im, true);
+      im.src = src;
+    }
+
+    function prefetchScreenImages(screenKey) {
+      const screen = DATA.screens[screenKey];
+      if (!screen) return;
+      (screen.hero || []).forEach((it) => prefetchLocalImage(it.image));
+      (screen.items || []).forEach((it) => prefetchLocalImage(it.image));
+    }
+
     function renderHero(items) {
       heroEl.innerHTML = "";
       if (!items || !items.length) {
@@ -964,6 +1175,11 @@
             }
           }, 70);
         });
+        if (item.nav) {
+          btn.addEventListener("pointerdown", () => {
+            prefetchScreenImages(item.nav);
+          }, { passive: true });
+        }
         gridEl.appendChild(btn);
       });
     }
