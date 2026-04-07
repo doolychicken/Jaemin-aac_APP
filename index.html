@@ -1076,6 +1076,18 @@
       (screen.items || []).forEach((it) => prefetchLocalImage(it.image));
     }
 
+    /** 아이패드에서 탭 직후 그리드가 비어 보이지 않도록, 다음에 올 가능성이 큰 화면 PNG를 선로딩 */
+    function prefetchLikelyNextScreens(screenKey) {
+      if (screenKey === "outingPlace") {
+        prefetchScreenImages("outingSchool");
+      } else if (screenKey === "outingSchool") {
+        prefetchScreenImages("outingSchoolFriends");
+        prefetchScreenImages("outingSchool_p2");
+      } else if (screenKey === "outingSchool_p2") {
+        prefetchScreenImages("outingSchool_p3");
+      }
+    }
+
     function renderHero(items) {
       heroEl.innerHTML = "";
       if (!items || !items.length) {
@@ -1221,6 +1233,10 @@
       }
 
       renderButtons(screen.items || [], screen.layout || (isMain ? "main" : "detail"));
+
+      requestAnimationFrame(() => {
+        prefetchLikelyNextScreens(key);
+      });
     }
 
     backBtn.addEventListener("click", () => {
