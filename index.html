@@ -528,22 +528,37 @@
       });
 
       defs.forEach((d) => {
-        const isSpotlightStudy = d.key === "studyPeg" || d.key === "studySoundCard";
+        const isSpotlightStudy =
+          d.key === "studyPeg" || d.key === "studySoundCard" || d.key === "studyColorPencil";
         const isBlankCard = d.key === "studyCard";
-        rest[d.key] = {
-          title: d.label,
-          helper: "원하는 종류를 선택하세요.",
-          hero: [],
-          items: d.subs.map((sub, i) => ({
-            label: sub,
-            nav: `${d.key}_${i + 1}`,
-            image: isBlankCard
-              ? BLANK_TILE_IMAGE
-              : (d.studyTileImage || "./images/study.png")
-          })),
-          layout: "main",
-          showPlayer: false
-        };
+        rest[d.key] = isSpotlightStudy
+          ? {
+            title: d.label,
+            helper: "그림을 누르면 읽어 줘요.",
+            hero: [],
+            items: [],
+            layout: "spotlight",
+            spotlight: {
+              image: d.studyTileImage || "./images/study.png",
+              label: d.label
+            },
+            showPlayer: false
+          }
+          : {
+            title: d.label,
+            helper: "원하는 종류를 선택하세요.",
+            hero: [],
+            items: d.subs.map((sub, i) => ({
+              label: sub,
+              nav: `${d.key}_${i + 1}`,
+              image: isBlankCard
+                ? BLANK_TILE_IMAGE
+                : (d.studyTileImage || "./images/study.png")
+            })),
+            layout: "main",
+            showPlayer: false
+          };
+        if (isSpotlightStudy) return;
         d.subs.forEach((sub, i) => {
           const k = `${d.key}_${i + 1}`;
           if (isSpotlightStudy) {
