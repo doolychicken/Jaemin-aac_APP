@@ -343,6 +343,7 @@
 </head>
 <body>
   <main class="app">
+    <div id="buildTag" class="muted" style="font-size:0.82rem; opacity:0.8;">BUILD: 2026-04-07</div>
     <div id="returnHint" class="return-hint">유튜브 시청 후 Safari 왼쪽 상단 뒤로 버튼으로 AAC로 돌아오세요.</div>
     <div class="topbar">
       <div>
@@ -1037,6 +1038,7 @@
     const spotlightBtnEl = document.getElementById("spotlightButton");
     const spotlightImgEl = document.getElementById("spotlightImage");
     const debugErrEl = document.getElementById("debugError");
+    const buildTagEl = document.getElementById("buildTag");
     const helperEl = document.getElementById("helperText");
     const heroEl = document.getElementById("heroRow");
     const playerWrapEl = document.getElementById("playerWrap");
@@ -1092,17 +1094,21 @@
     }
 
     function selectAllOutingDefaults() {
-      const p = (DATA.screens.outingPerson?.items || []).slice(0, 3);
+      const outingPersonScreen = (DATA && DATA.screens && DATA.screens.outingPerson) ? DATA.screens.outingPerson : null;
+      const outingPlaceScreen = (DATA && DATA.screens && DATA.screens.outingPlace) ? DATA.screens.outingPlace : null;
+      const outingTransportScreen = (DATA && DATA.screens && DATA.screens.outingTransport) ? DATA.screens.outingTransport : null;
+
+      const p = (((outingPersonScreen && outingPersonScreen.items) ? outingPersonScreen.items : [])).slice(0, 3);
       outingSelection.persons = p
         .filter((it) => it && it.label)
         .map((it) => ({ label: it.label, image: it.image || "" }));
 
-      const placeItems = DATA.screens.outingPlace?.items || [];
+      const placeItems = (outingPlaceScreen && outingPlaceScreen.items) ? outingPlaceScreen.items : [];
       const school = placeItems.find((it) => it.label === "학교") || placeItems[0];
       outingSelection.place = school ? { label: school.label, image: school.image || "" } : null;
 
-      const t = (DATA.screens.outingTransport?.items || []).find((it) => it.label === "버스") ||
-        (DATA.screens.outingTransport?.items || [])[0];
+      const transportItems = (outingTransportScreen && outingTransportScreen.items) ? outingTransportScreen.items : [];
+      const t = (transportItems.find((it) => it.label === "버스")) || transportItems[0];
       outingSelection.transport = t ? { label: t.label, image: t.image || "" } : null;
     }
 
@@ -1166,7 +1172,8 @@
     }
 
     function currentKey() {
-      return navStack[navStack.length - 1]?.key || "main";
+      const top = navStack[navStack.length - 1];
+      return (top && top.key) ? top.key : "main";
     }
 
     function pushScreen(key, label) {
@@ -1516,7 +1523,7 @@
 
     window.addEventListener("error", (e) => {
       try {
-        const msg = e?.error?.stack || e?.message || String(e);
+        const msg = (e && e.error && e.error.stack) || (e && e.message) || String(e);
         if (debugErrEl) {
           debugErrEl.style.display = "block";
           debugErrEl.textContent = `오류가 발생했어요:\\n${msg}`;
@@ -1525,9 +1532,10 @@
     });
 
     try {
+      if (buildTagEl) buildTagEl.textContent = "BUILD: 2026-04-07 (JS RUNNING)";
       render();
     } catch (e) {
-      const msg = e?.stack || String(e);
+      const msg = (e && e.stack) || String(e);
       if (debugErrEl) {
         debugErrEl.style.display = "block";
         debugErrEl.textContent = `오류가 발생했어요:\\n${msg}`;
