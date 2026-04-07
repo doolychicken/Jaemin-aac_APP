@@ -344,6 +344,13 @@
 <body>
   <main class="app">
     <div id="buildTag" class="muted" style="font-size:0.82rem; opacity:0.8;">BUILD: 2026-04-07</div>
+    <script>
+      // Ultra-early sanity check: if this doesn't change, JS is not executing at all.
+      try {
+        var el = document.getElementById("buildTag");
+        if (el) el.textContent = "BUILD: 2026-04-07 (EARLY JS OK)";
+      } catch (_e) {}
+    </script>
     <div id="returnHint" class="return-hint">유튜브 시청 후 Safari 왼쪽 상단 뒤로 버튼으로 AAC로 돌아오세요.</div>
     <div class="topbar">
       <div>
