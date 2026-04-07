@@ -158,6 +158,50 @@
       justify-items: center;
     }
 
+    .hero.outing-summary {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      justify-items: center;
+    }
+
+    .hero.outing-summary .tile {
+      width: min(30vw, 170px);
+      border-radius: 16px;
+      padding: 8px;
+      gap: 6px;
+    }
+
+    .hero.outing-summary .tile img {
+      border-radius: 10px;
+    }
+
+    .hero.outing-summary .tile-label {
+      font-size: 0.78rem;
+      line-height: 1.05;
+    }
+
+    .grid.outing-picker {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      justify-items: center;
+    }
+
+    .grid.outing-picker .tile {
+      width: min(30vw, 180px);
+      border-radius: 16px;
+      padding: 8px;
+      gap: 6px;
+    }
+
+    .grid.outing-picker .tile img {
+      border-radius: 10px;
+    }
+
+    .grid.outing-picker .tile-label {
+      font-size: 0.8rem;
+      line-height: 1.05;
+    }
+
     .tile {
       width: min(42vw, 270px);
       aspect-ratio: 1 / 1;
@@ -699,8 +743,25 @@
             { label: "스케줄표", nav: "scheduleHome", icon: "📅" },
             { label: "과목", nav: "subjectHome", icon: "📚" },
             { label: "날짜", nav: "dateHome", icon: "📆" },
+            { label: "사람", nav: "peopleHome", image: "./images/outing_person_me.png" },
             { label: "휴식", icon: "🛋️" },
             { label: "이전", nav: "main", image: "./images/study.png" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        peopleHome: {
+          title: "사람",
+          helper: "사람을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "나", image: "./images/outing_person_me.png" },
+            { label: "엄마", image: "./images/outing_person_mom.png" },
+            { label: "아빠", image: "./images/outing_person_dad.png" },
+            { label: "활동보조 선생님", image: "./images/outing_person_activity_support.png" },
+            { label: "할아버지", image: "./images/outing_person_grandpa.png" },
+            { label: "할머니", image: "./images/outing_person_grandma.png" }
           ],
           layout: "main",
           showPlayer: false
@@ -1288,14 +1349,14 @@
     }
 
     function getOutingHeroItems() {
-      const peopleLabel = outingSelection.people.length
-        ? `사람: ${outingSelection.people.map((p) => p.label).join(", ")}`
-        : "사람: 미선택";
+      const peopleCards = outingSelection.people.length
+        ? outingSelection.people.map((p, i) => ({
+          label: `사람${i + 1}: ${p.label}`,
+          image: p.image
+        }))
+        : [{ label: "사람: 미선택", image: "./images/outing_person_me.png" }];
       return [
-        {
-          label: peopleLabel,
-          image: (outingSelection.people[0] && outingSelection.people[0].image) || "./images/outing_person_me.png"
-        },
+        ...peopleCards,
         {
           label: `장소: ${(outingSelection.place && outingSelection.place.label) || "미선택"}`,
           image: (outingSelection.place && outingSelection.place.image) || "./images/outing_school1.png"
@@ -1312,10 +1373,11 @@
       spotlightViewEl.style.display = "none";
       spotlightBtnEl.onclick = null;
       gridEl.style.display = "";
+      heroEl.className = "hero outing-summary";
       renderHero(getOutingHeroItems());
 
       gridEl.innerHTML = "";
-      gridEl.className = "grid";
+      gridEl.className = "grid outing-picker";
 
       if (!outingPlannerMode) {
         const buttons = [
@@ -1559,6 +1621,7 @@
         appMainEl.classList.remove("app--spotlight");
         spotlightViewEl.style.display = "none";
         spotlightBtnEl.onclick = null;
+        heroEl.className = "hero";
         gridEl.style.display = "";
         renderButtons(screen.items || [], screen.layout || (isMain ? "main" : "detail"));
       }
