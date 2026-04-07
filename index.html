@@ -196,6 +196,29 @@
       line-height: 1.1;
     }
 
+    .tile.is-selected {
+      border-color: #16a34a;
+      box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.16);
+      position: relative;
+    }
+
+    .tile-check {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #16a34a;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 900;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
     /* "다음/이전"처럼 7번째(또는 마지막) 버튼이 있어도
        기존 6개 타일 크기를 흐트러뜨리지 않도록 작은 형태로 표시 */
     .tile-nav {
@@ -1067,6 +1090,13 @@
 
     const navStack = [{ key: "main", label: "메인" }];
     let selectedYoutube = "";
+    const OUTING_MAX_PERSON = 3;
+    let outingPlannerMode = "";
+    const outingSelection = {
+      people: [],
+      place: null,
+      transport: null
+    };
     let preferredKoVoice = null;
     let ttsWarmedUp = false;
     const isAppleMobile = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
@@ -1216,6 +1246,134 @@
       (screen.items || []).forEach((it) => prefetchLocalImage(it.image));
       if (screen.spotlight && screen.spotlight.image) {
         prefetchLocalImage(screen.spotlight.image);
+      }
+    }
+
+    function outingOptions(kind) {
+      if (kind === "person") return DATA.screens.outingPerson.items || [];
+      if (kind === "place") return DATA.screens.outingPlace.items || [];
+      if (kind === "transport") return DATA.screens.outingTransport.items || [];
+      return [];
+    }
+
+    function isOutingSelected(kind, item) {
+      if (kind === "person") return outingSelection.people.some((p) => p.label === item.label);
+      if (kind === "place") return outingSelection.place && outingSelection.place.label === item.label;
+      if (kind === "transport") return outingSelection.transport && outingSelection.transport.label === item.label;
+      return false;
+    }
+
+    function toggleOutingSelection(kind, item) {
+      if (kind === "person") {
+        const idx = outingSelection.people.findIndex((p) => p.label === item.label);
+        if (idx >= 0) {
+          outingSelection.people.splice(idx, 1);
+          return;
+        }
+        if (outingSelection.people.length >= OUTING_MAX_PERSON) return;
+        outingSelection.people.push({ label: item.label, image: item.image || "./images/outing_person_me.png" });
+        if (outingSelection.people.length >= OUTING_MAX_PERSON) outingPlannerMode = "";
+        return;
+      }
+      if (kind === "place") {
+        outingSelection.place = { label: item.label, image: item.image || "./images/outing_school1.png" };
+        outingPlannerMode = "";
+        return;
+      }
+      if (kind === "transport") {
+        outingSelection.transport = { label: item.label, image: item.image || "./images/transport_bus.png" };
+        outingPlannerMode = "";
+      }
+    }
+
+    function getOutingHeroItems() {
+      const peopleLabel = outingSelection.people.length
+        ? `사람: ${outingSelection.people.map((p) => p.label).join(", ")}`
+        : "사람: 미선택";
+      return [
+        {
+          label: peopleLabel,
+          image: (outingSelection.people[0] && outingSelection.people[0].image) || "./images/outing_person_me.png"
+        },
+        {
+          label: `장소: ${(outingSelection.place && outingSelection.place.label) || "미선택"}`,
+          image: (outingSelection.place && outingSelection.place.image) || "./images/outing_school1.png"
+        },
+        {
+          label: `교통수단: ${(outingSelection.transport && outingSelection.transport.label) || "미선택"}`,
+          image: (outingSelection.transport && outingSelection.transport.image) || "./images/transport_bus.png"
+        }
+      ];
+    }
+
+    function renderOutingPlanner() {
+      appMainEl.classList.remove("app--spotlight");
+      spotlightViewEl.style.display = "none";
+      spotlightBtnEl.onclick = null;
+      gridEl.style.display = "";
+      renderHero(getOutingHeroItems());
+
+      gridEl.innerHTML = "";
+      gridEl.className = "grid";
+
+      if (!outingPlannerMode) {
+        const buttons = [
+          { kind: "person", label: `사람 선택 (${outingSelection.people.length}/${OUTING_MAX_PERSON})` },
+          { kind: "place", label: `장소 선택 (${outingSelection.place ? "완료" : "미선택"})` },
+          { kind: "transport", label: `이동수단 선택 (${outingSelection.transport ? "완료" : "미선택"})` }
+        ];
+        buttons.forEach((info) => {
+          const btn = document.createElement("button");
+          btn.className = "btn main";
+          btn.textContent = info.label;
+          btn.addEventListener("click", () => {
+            speak(info.label.replace(/\s*\(.+\)$/, ""));
+            outingPlannerMode = info.kind;
+            render();
+          });
+          gridEl.appendChild(btn);
+        });
+        return;
+      }
+
+      const options = outingOptions(outingPlannerMode);
+      options.forEach((item) => {
+        const btn = document.createElement("button");
+        btn.className = "tile";
+        if (isOutingSelected(outingPlannerMode, item)) btn.classList.add("is-selected");
+        const img = document.createElement("img");
+        img.src = item.image || "./images/study.png";
+        img.alt = item.label;
+        setupImageElement(img, true);
+        const label = document.createElement("div");
+        label.className = "tile-label";
+        label.textContent = item.label;
+        btn.appendChild(img);
+        btn.appendChild(label);
+        if (isOutingSelected(outingPlannerMode, item)) {
+          const check = document.createElement("span");
+          check.className = "tile-check";
+          check.textContent = "✓";
+          btn.appendChild(check);
+        }
+        btn.addEventListener("click", () => {
+          speak(item.label);
+          toggleOutingSelection(outingPlannerMode, item);
+          render();
+        });
+        gridEl.appendChild(btn);
+      });
+
+      if (outingPlannerMode === "person") {
+        const doneBtn = document.createElement("button");
+        doneBtn.className = "btn";
+        doneBtn.textContent = "사람 선택 완료";
+        doneBtn.addEventListener("click", () => {
+          speak("사람 선택 완료");
+          outingPlannerMode = "";
+          render();
+        });
+        gridEl.appendChild(doneBtn);
       }
     }
 
@@ -1377,7 +1535,9 @@
 
       const isSpotlight = screen.layout === "spotlight" && screen.spotlight && screen.spotlight.image;
       const isEmpty = screen.layout === "empty";
-      if (isSpotlight) {
+      if (key === "outingHome") {
+        renderOutingPlanner();
+      } else if (isSpotlight) {
         appMainEl.classList.add("app--spotlight");
         spotlightViewEl.style.display = "flex";
         gridEl.style.display = "none";
