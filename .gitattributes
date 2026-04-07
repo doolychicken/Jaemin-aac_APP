@@ -1,0 +1,14 @@
+* text=auto
+
+*.html text eol=lf
+*.htm  text eol=lf
+*.css  text eol=lf
+*.js   text eol=lf
+*.py   text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary

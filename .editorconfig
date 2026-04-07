@@ -1,0 +1,7 @@
+# Helps keep index.html as UTF-8 (no BOM) so Korean labels do not break.
+root = true
+
+[*.{html,htm,css,js,mjs}]
+charset = utf-8
+insert_final_newline = true
+trim_trailing_whitespace = true

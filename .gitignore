@@ -7,3 +7,9 @@ Desktop.ini
 .vscode/
 *.swp
 *~
+
+# Saved-page / screenshot dumps and other machine-local clutter (not referenced by index.html)
+_local/
+
+# Editor or script backups next to the real file
+*.backup.html
