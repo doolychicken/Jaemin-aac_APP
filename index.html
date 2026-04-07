@@ -788,7 +788,8 @@
             { label: "1. 아침에 학교 가요" },
             { label: "2. 장애인 콜택시 타요" },
             { label: "3. 치료실 선택", nav: "scheduleTodayTherapy" },
-            { label: "4. 장애인 콜택시 타고 집에 와요" }
+            { label: "4. 장애인 콜택시 타요" },
+            { label: "5. 집에 와요" }
           ],
           layout: "main",
           showPlayer: false
@@ -808,42 +809,183 @@
         },
 
         scheduleTodayTherapy_bigtree: {
+          title: "수업 선택",
+          helper: "큰나무병원에서 받을 수업을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "언어 수업", nav: "scheduleTodayTherapy_bigtree_speech" },
+            { label: "작업 수업", nav: "scheduleTodayTherapy_bigtree_occupational" },
+            { label: "감각통합 수업", nav: "scheduleTodayTherapy_bigtree_sensory" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        scheduleTodayTherapy_bigtree_speech: {
           title: "오늘 일정",
-          helper: "선택한 치료실 일정이에요.",
+          helper: "선택한 치료실/수업 일정이에요.",
           hero: [],
           items: [
             { label: "1. 아침에 학교 가요" },
             { label: "2. 장애인 콜택시 타요" },
             { label: "3. 큰나무병원 치료실 가요" },
-            { label: "4. 장애인 콜택시 타고 집에 와요" }
+            { label: "4. 언어 수업 받아요" },
+            { label: "5. 장애인 콜택시 타요" },
+            { label: "6. 집에 와요" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        scheduleTodayTherapy_bigtree_occupational: {
+          title: "오늘 일정",
+          helper: "선택한 치료실/수업 일정이에요.",
+          hero: [],
+          items: [
+            { label: "1. 아침에 학교 가요" },
+            { label: "2. 장애인 콜택시 타요" },
+            { label: "3. 큰나무병원 치료실 가요" },
+            { label: "4. 작업 수업 받아요" },
+            { label: "5. 장애인 콜택시 타요" },
+            { label: "6. 집에 와요" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        scheduleTodayTherapy_bigtree_sensory: {
+          title: "오늘 일정",
+          helper: "선택한 치료실/수업 일정이에요.",
+          hero: [],
+          items: [
+            { label: "1. 아침에 학교 가요" },
+            { label: "2. 장애인 콜택시 타요" },
+            { label: "3. 큰나무병원 치료실 가요" },
+            { label: "4. 감각통합 수업 받아요" },
+            { label: "5. 장애인 콜택시 타요" },
+            { label: "6. 집에 와요" }
           ],
           layout: "main",
           showPlayer: false
         },
 
         scheduleTodayTherapy_severance: {
+          title: "수업 선택",
+          helper: "세브란스병원에서 받을 수업을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "언어 수업", nav: "scheduleTodayTherapy_severance_speech" },
+            { label: "작업 수업", nav: "scheduleTodayTherapy_severance_occupational" },
+            { label: "감각통합 수업", nav: "scheduleTodayTherapy_severance_sensory" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        scheduleTodayTherapy_severance_speech: {
           title: "오늘 일정",
-          helper: "선택한 치료실 일정이에요.",
+          helper: "선택한 치료실/수업 일정이에요.",
           hero: [],
           items: [
             { label: "1. 아침에 학교 가요" },
             { label: "2. 장애인 콜택시 타요" },
             { label: "3. 세브란스병원 치료실 가요" },
-            { label: "4. 장애인 콜택시 타고 집에 와요" }
+            { label: "4. 언어 수업 받아요" },
+            { label: "5. 장애인 콜택시 타요" },
+            { label: "6. 집에 와요" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        scheduleTodayTherapy_severance_occupational: {
+          title: "오늘 일정",
+          helper: "선택한 치료실/수업 일정이에요.",
+          hero: [],
+          items: [
+            { label: "1. 아침에 학교 가요" },
+            { label: "2. 장애인 콜택시 타요" },
+            { label: "3. 세브란스병원 치료실 가요" },
+            { label: "4. 작업 수업 받아요" },
+            { label: "5. 장애인 콜택시 타요" },
+            { label: "6. 집에 와요" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        scheduleTodayTherapy_severance_sensory: {
+          title: "오늘 일정",
+          helper: "선택한 치료실/수업 일정이에요.",
+          hero: [],
+          items: [
+            { label: "1. 아침에 학교 가요" },
+            { label: "2. 장애인 콜택시 타요" },
+            { label: "3. 세브란스병원 치료실 가요" },
+            { label: "4. 감각통합 수업 받아요" },
+            { label: "5. 장애인 콜택시 타요" },
+            { label: "6. 집에 와요" }
           ],
           layout: "main",
           showPlayer: false
         },
 
         scheduleTodayTherapy_communication: {
+          title: "수업 선택",
+          helper: "사람과소통에서 받을 수업을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "언어 수업", nav: "scheduleTodayTherapy_communication_speech" },
+            { label: "작업 수업", nav: "scheduleTodayTherapy_communication_occupational" },
+            { label: "감각통합 수업", nav: "scheduleTodayTherapy_communication_sensory" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        scheduleTodayTherapy_communication_speech: {
           title: "오늘 일정",
-          helper: "선택한 치료실 일정이에요.",
+          helper: "선택한 치료실/수업 일정이에요.",
           hero: [],
           items: [
             { label: "1. 아침에 학교 가요" },
             { label: "2. 장애인 콜택시 타요" },
             { label: "3. 사람과소통 치료실 가요" },
-            { label: "4. 장애인 콜택시 타고 집에 와요" }
+            { label: "4. 언어 수업 받아요" },
+            { label: "5. 장애인 콜택시 타요" },
+            { label: "6. 집에 와요" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        scheduleTodayTherapy_communication_occupational: {
+          title: "오늘 일정",
+          helper: "선택한 치료실/수업 일정이에요.",
+          hero: [],
+          items: [
+            { label: "1. 아침에 학교 가요" },
+            { label: "2. 장애인 콜택시 타요" },
+            { label: "3. 사람과소통 치료실 가요" },
+            { label: "4. 작업 수업 받아요" },
+            { label: "5. 장애인 콜택시 타요" },
+            { label: "6. 집에 와요" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        scheduleTodayTherapy_communication_sensory: {
+          title: "오늘 일정",
+          helper: "선택한 치료실/수업 일정이에요.",
+          hero: [],
+          items: [
+            { label: "1. 아침에 학교 가요" },
+            { label: "2. 장애인 콜택시 타요" },
+            { label: "3. 사람과소통 치료실 가요" },
+            { label: "4. 감각통합 수업 받아요" },
+            { label: "5. 장애인 콜택시 타요" },
+            { label: "6. 집에 와요" }
           ],
           layout: "main",
           showPlayer: false
