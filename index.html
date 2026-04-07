@@ -810,14 +810,11 @@
 
         scheduleTodayTherapy_bigtree: {
           title: "수업 선택",
-          helper: "큰나무병원에서 받을 수업을 선택하세요.",
+          helper: "큰나무병원에서 수업 3개까지 선택하세요.",
           hero: [],
-          items: [
-            { label: "언어 수업", nav: "scheduleTodayTherapy_bigtree_speech" },
-            { label: "작업 수업", nav: "scheduleTodayTherapy_bigtree_occupational" },
-            { label: "감각통합 수업", nav: "scheduleTodayTherapy_bigtree_sensory" }
-          ],
-          layout: "main",
+          items: [],
+          layout: "therapyPicker",
+          therapyCenter: "큰나무병원",
           showPlayer: false
         },
 
@@ -871,14 +868,11 @@
 
         scheduleTodayTherapy_severance: {
           title: "수업 선택",
-          helper: "세브란스병원에서 받을 수업을 선택하세요.",
+          helper: "세브란스병원에서 수업 3개까지 선택하세요.",
           hero: [],
-          items: [
-            { label: "언어 수업", nav: "scheduleTodayTherapy_severance_speech" },
-            { label: "작업 수업", nav: "scheduleTodayTherapy_severance_occupational" },
-            { label: "감각통합 수업", nav: "scheduleTodayTherapy_severance_sensory" }
-          ],
-          layout: "main",
+          items: [],
+          layout: "therapyPicker",
+          therapyCenter: "세브란스병원",
           showPlayer: false
         },
 
@@ -932,13 +926,19 @@
 
         scheduleTodayTherapy_communication: {
           title: "수업 선택",
-          helper: "사람과소통에서 받을 수업을 선택하세요.",
+          helper: "사람과소통에서 수업 3개까지 선택하세요.",
           hero: [],
-          items: [
-            { label: "언어 수업", nav: "scheduleTodayTherapy_communication_speech" },
-            { label: "작업 수업", nav: "scheduleTodayTherapy_communication_occupational" },
-            { label: "감각통합 수업", nav: "scheduleTodayTherapy_communication_sensory" }
-          ],
+          items: [],
+          layout: "therapyPicker",
+          therapyCenter: "사람과소통",
+          showPlayer: false
+        },
+
+        scheduleTodayTherapyResult: {
+          title: "오늘 일정",
+          helper: "선택한 치료실/수업 일정이에요.",
+          hero: [],
+          items: [],
           layout: "main",
           showPlayer: false
         },
@@ -1364,11 +1364,17 @@
     const navStack = [{ key: "main", label: "메인" }];
     let selectedYoutube = "";
     const OUTING_MAX_PERSON = 3;
+    const THERAPY_MAX_SELECT = 3;
+    const THERAPY_OPTIONS = ["언어", "인지", "음악", "연하", "작업", "물리"];
     let outingPlannerMode = "";
     const outingSelection = {
       people: [],
       place: null,
       transport: null
+    };
+    const therapySelection = {
+      center: "",
+      classes: []
     };
     let preferredKoVoice = null;
     let ttsWarmedUp = false;
@@ -1651,6 +1657,81 @@
       }
     }
 
+    function buildTherapyPlanItems() {
+      const classes = therapySelection.classes.slice(0, THERAPY_MAX_SELECT);
+      return [
+        { label: "1. 아침에 학교 가요" },
+        { label: "2. 장애인 콜택시 타요" },
+        { label: `3. ${therapySelection.center} 치료실 가요` },
+        ...classes.map((name, idx) => ({ label: `${4 + idx}. ${name} 수업 받아요` })),
+        { label: `${4 + classes.length}. 장애인 콜택시 타요` },
+        { label: `${5 + classes.length}. 집에 와요` }
+      ];
+    }
+
+    function renderTherapyPicker(screen) {
+      appMainEl.classList.remove("app--spotlight");
+      spotlightViewEl.style.display = "none";
+      spotlightBtnEl.onclick = null;
+      heroEl.className = "hero";
+      heroEl.style.display = "none";
+      gridEl.style.display = "";
+      gridEl.innerHTML = "";
+      gridEl.className = "grid outing-picker";
+
+      const center = screen.therapyCenter || "";
+      if (therapySelection.center !== center) {
+        therapySelection.center = center;
+        therapySelection.classes = [];
+      }
+
+      THERAPY_OPTIONS.forEach((name) => {
+        const btn = document.createElement("button");
+        const selected = therapySelection.classes.includes(name);
+        btn.className = `tile${selected ? " is-selected" : ""}`;
+        const art = document.createElement("div");
+        art.className = "tile-art";
+        art.textContent = "🧩";
+        const label = document.createElement("div");
+        label.className = "tile-label";
+        label.textContent = name;
+        btn.appendChild(art);
+        btn.appendChild(label);
+        if (selected) {
+          const check = document.createElement("span");
+          check.className = "tile-check";
+          check.textContent = "✓";
+          btn.appendChild(check);
+        }
+        btn.addEventListener("click", () => {
+          speak(name);
+          const idx = therapySelection.classes.indexOf(name);
+          if (idx >= 0) {
+            therapySelection.classes.splice(idx, 1);
+          } else if (therapySelection.classes.length < THERAPY_MAX_SELECT) {
+            therapySelection.classes.push(name);
+          }
+          render();
+        });
+        gridEl.appendChild(btn);
+      });
+
+      const doneBtn = document.createElement("button");
+      doneBtn.className = "btn main";
+      doneBtn.textContent = `수업 선택 완료 (${therapySelection.classes.length}/${THERAPY_MAX_SELECT})`;
+      doneBtn.addEventListener("click", () => {
+        if (!therapySelection.classes.length) {
+          speak("수업을 한 개 이상 선택해요");
+          return;
+        }
+        speak("수업 선택 완료");
+        DATA.screens.scheduleTodayTherapyResult.items = buildTherapyPlanItems();
+        pushScreen("scheduleTodayTherapyResult", "오늘 일정");
+        render();
+      });
+      gridEl.appendChild(doneBtn);
+    }
+
     /** 아이패드에서 탭 직후 그리드가 비어 보이지 않도록, 다음에 올 가능성이 큰 화면 PNG를 선로딩 */
     function prefetchLikelyNextScreens(screenKey) {
       if (screenKey === "outingPlace") {
@@ -1811,6 +1892,8 @@
       const isEmpty = screen.layout === "empty";
       if (key === "outingHome") {
         renderOutingPlanner();
+      } else if (screen.layout === "therapyPicker") {
+        renderTherapyPicker(screen);
       } else if (isSpotlight) {
         appMainEl.classList.add("app--spotlight");
         spotlightViewEl.style.display = "flex";
