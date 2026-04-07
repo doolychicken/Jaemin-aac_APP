@@ -98,32 +98,6 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    /* 장소 → 학교 → 친구들: 한 화면에 여러 명이 보이도록 작은 타일 */
-    .grid.grid-friends {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      max-width: 640px;
-      margin-inline: auto;
-    }
-    .grid.grid-friends .tile {
-      width: 100%;
-      max-width: none;
-      min-width: 0;
-      aspect-ratio: 1 / 1;
-      padding: 6px;
-      gap: 4px;
-      border-radius: 16px;
-    }
-    .grid.grid-friends .tile img {
-      object-fit: cover;
-      border-radius: 12px;
-    }
-    .grid.grid-friends .tile-label {
-      font-size: 0.72rem;
-      font-weight: 800;
-      line-height: 1.05;
-    }
-
     .hero {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -260,23 +234,14 @@
     }
 
     @media (min-width: 768px) {
-      .grid:not(.detail):not(.media):not(.grid-friends) {
+      .grid:not(.detail):not(.media) {
         grid-template-columns: repeat(3, minmax(0, 1fr));
         max-width: 960px;
         margin-inline: auto;
       }
 
-      .grid:not(.detail):not(.media):not(.grid-friends) .tile {
+      .grid:not(.detail):not(.media) .tile {
         width: min(30vw, 260px);
-      }
-
-      .grid.grid-friends {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        max-width: 520px;
-        gap: 10px;
-      }
-      .grid.grid-friends .tile {
-        padding: 8px;
       }
     }
 
@@ -898,7 +863,7 @@
             { label: "윤희 2", image: "./images/school_friends_윤희1.png" },
             { label: "하린", image: "./images/school_friends_하린.png" }
           ],
-          layout: "friends",
+          layout: "main",
           showPlayer: false
         },
 
@@ -1144,15 +1109,14 @@
     function renderButtons(items, layout) {
       gridEl.innerHTML = "";
       const isMain = layout === "main";
-      const isFriends = layout === "friends";
       const isMedia = layout === "media";
-      gridEl.className = isFriends ? "grid grid-friends" : (isMain ? "grid" : (isMedia ? "grid media" : "grid detail"));
+      gridEl.className = isMain ? "grid" : (isMedia ? "grid media" : "grid detail");
 
       items.forEach((item, index) => {
         const btn = document.createElement("button");
         const yUrl = resolveYoutube(item);
-        if (((isMain || isFriends) && item.image) || (isMedia && (item.image || yUrl))) {
-          const isSmallNavButton = (isMain || isFriends) && (item.label === "다음" || item.label === "이전");
+        if ((isMain && item.image) || (isMedia && (item.image || yUrl))) {
+          const isSmallNavButton = isMain && (item.label === "다음" || item.label === "이전");
           btn.className = isSmallNavButton ? "tile tile-nav" : "tile";
 
           if (!isSmallNavButton) {
