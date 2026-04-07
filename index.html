@@ -1348,6 +1348,17 @@
       "세브란스병원": ["언어", "작업", "연하", "물리"],
       "사람과소통":  ["언어"]
     };
+    const THERAPY_CENTER_IMAGE = {
+      "세브란스병원": "./images/therapy_center_severance.png"
+    };
+    const THERAPY_CLASS_IMAGE = {
+      "인지": "./images/therapy_class_cognitive.png",
+      "음악": "./images/therapy_class_music.png"
+    };
+    const THERAPY_CLASS_EMOJI = {
+      "언어": "🗣️", "인지": "🧠", "음악": "🎵",
+      "연하": "💧", "작업": "🖐️", "물리": "🏃"
+    };
     const WEEKDAY_OPTIONS = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"];
     const WEATHER_OPTIONS = ["맑음", "흐림", "비", "눈", "바람"];
     const WEATHER_EMOJI = { "맑음": "☀️", "흐림": "🌥️", "비": "🌧️", "눈": "❄️", "바람": "💨" };
@@ -1658,8 +1669,14 @@
       let idx = 3;
       therapySelection.centers.forEach((center) => {
         const classes = (therapySelection.classesByCenter[center] || []);
-        result.push({ label: `${idx++}. ${center} 치료실 가요` });
-        classes.forEach((cls) => result.push({ label: `${idx++}. ${cls} 수업 받아요` }));
+        result.push({
+          label: `${idx++}. ${center} 치료실 가요`,
+          ...(THERAPY_CENTER_IMAGE[center] ? { image: THERAPY_CENTER_IMAGE[center] } : {})
+        });
+        classes.forEach((cls) => result.push({
+          label: `${idx++}. ${cls} 수업 받아요`,
+          ...(THERAPY_CLASS_IMAGE[cls] ? { image: THERAPY_CLASS_IMAGE[cls] } : {})
+        }));
         result.push({ label: `${idx++}. 장애인 콜택시 타요`, image: "./images/transport_calltaxi.png" });
       });
       result.push({ label: `${idx}. 집에 와요` });
@@ -1686,20 +1703,29 @@
       }
 
       const CENTERS = ["큰나무병원", "세브란스병원", "사람과소통"];
-      const CENTER_EMOJI = { "큰나무병원": "🌳", "세브란스병원": "🏥", "사람과소통": "🗣️" };
+      const CENTER_EMOJI  = { "큰나무병원": "🌳", "세브란스병원": "🏥", "사람과소통": "🗣️" };
+      const CENTER_IMAGE  = THERAPY_CENTER_IMAGE;
       const MAX_CENTERS = 2;
 
       CENTERS.forEach((name) => {
         const btn = document.createElement("button");
         const selected = therapySelection.centers.includes(name);
         btn.className = `tile${selected ? " is-selected" : ""}`;
-        const art = document.createElement("div");
-        art.className = "tile-art";
-        art.textContent = CENTER_EMOJI[name] || "🏥";
+        if (CENTER_IMAGE[name]) {
+          const img = document.createElement("img");
+          img.src = CENTER_IMAGE[name];
+          img.alt = name;
+          setupImageElement(img, true);
+          btn.appendChild(img);
+        } else {
+          const art = document.createElement("div");
+          art.className = "tile-art";
+          art.textContent = CENTER_EMOJI[name] || "🏥";
+          btn.appendChild(art);
+        }
         const label = document.createElement("div");
         label.className = "tile-label";
         label.textContent = name;
-        btn.appendChild(art);
         btn.appendChild(label);
         if (selected) {
           const order = therapySelection.centers.indexOf(name) + 1;
@@ -1761,17 +1787,28 @@
       headerBtn.textContent = `${centerIndex + 1}번째 치료실: ${center}`;
       gridEl.appendChild(headerBtn);
 
+      const CLASS_IMAGE = THERAPY_CLASS_IMAGE;
+      const CLASS_EMOJI = THERAPY_CLASS_EMOJI;
+
       centerOptions.forEach((name) => {
         const btn = document.createElement("button");
         const isSelected = selected.includes(name);
         btn.className = `tile${isSelected ? " is-selected" : ""}`;
-        const art = document.createElement("div");
-        art.className = "tile-art";
-        art.textContent = "🧩";
+        if (CLASS_IMAGE[name]) {
+          const img = document.createElement("img");
+          img.src = CLASS_IMAGE[name];
+          img.alt = name;
+          setupImageElement(img, true);
+          btn.appendChild(img);
+        } else {
+          const art = document.createElement("div");
+          art.className = "tile-art";
+          art.textContent = CLASS_EMOJI[name] || "🧩";
+          btn.appendChild(art);
+        }
         const label = document.createElement("div");
         label.className = "tile-label";
         label.textContent = name;
-        btn.appendChild(art);
         btn.appendChild(label);
         if (isSelected) {
           const check = document.createElement("span");
