@@ -772,9 +772,78 @@
           helper: "스케줄 관련 항목을 선택하세요.",
           hero: [],
           items: [
-            { label: "오늘 일정" },
+            { label: "오늘 일정", nav: "scheduleToday" },
             { label: "내일 일정" },
             { label: "이번 주" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        scheduleToday: {
+          title: "오늘 일정",
+          helper: "순서대로 눌러 말해 보세요. (치료실은 선택)",
+          hero: [],
+          items: [
+            { label: "1. 아침에 학교 가요" },
+            { label: "2. 장애인 콜택시 타요" },
+            { label: "3. 치료실 선택", nav: "scheduleTodayTherapy" },
+            { label: "4. 장애인 콜택시 타고 집에 와요" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        scheduleTodayTherapy: {
+          title: "치료실 선택",
+          helper: "오늘 갈 치료실을 선택하세요.",
+          hero: [],
+          items: [
+            { label: "큰나무병원", nav: "scheduleTodayTherapy_bigtree" },
+            { label: "세브란스병원", nav: "scheduleTodayTherapy_severance" },
+            { label: "사람과소통", nav: "scheduleTodayTherapy_communication" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        scheduleTodayTherapy_bigtree: {
+          title: "오늘 일정",
+          helper: "선택한 치료실 일정이에요.",
+          hero: [],
+          items: [
+            { label: "1. 아침에 학교 가요" },
+            { label: "2. 장애인 콜택시 타요" },
+            { label: "3. 큰나무병원 치료실 가요" },
+            { label: "4. 장애인 콜택시 타고 집에 와요" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        scheduleTodayTherapy_severance: {
+          title: "오늘 일정",
+          helper: "선택한 치료실 일정이에요.",
+          hero: [],
+          items: [
+            { label: "1. 아침에 학교 가요" },
+            { label: "2. 장애인 콜택시 타요" },
+            { label: "3. 세브란스병원 치료실 가요" },
+            { label: "4. 장애인 콜택시 타고 집에 와요" }
+          ],
+          layout: "main",
+          showPlayer: false
+        },
+
+        scheduleTodayTherapy_communication: {
+          title: "오늘 일정",
+          helper: "선택한 치료실 일정이에요.",
+          hero: [],
+          items: [
+            { label: "1. 아침에 학교 가요" },
+            { label: "2. 장애인 콜택시 타요" },
+            { label: "3. 사람과소통 치료실 가요" },
+            { label: "4. 장애인 콜택시 타고 집에 와요" }
           ],
           layout: "main",
           showPlayer: false
