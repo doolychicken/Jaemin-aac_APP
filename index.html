@@ -1420,60 +1420,9 @@
 
     function render() {
       const key = currentKey();
-      let screen = DATA.screens[key] || DATA.screens.main;
+      const screen = DATA.screens[key] || DATA.screens.main;
       const isMain = key === "main";
       backBtn.style.display = isMain ? "none" : "inline-flex";
-
-      if (key === "outingHome") {
-        const modeMap = {
-          person: { label: "사람 선택", src: DATA.screens.outingPerson?.items || [], bucket: "persons" },
-          place: { label: "장소 선택", src: DATA.screens.outingPlace?.items || [], bucket: "place" },
-          transport: { label: "이동수단 선택", src: DATA.screens.outingTransport?.items || [], bucket: "transport" }
-        };
-        const modeInfo = modeMap[outingPickerMode] || modeMap.person;
-        const personTop = (outingSelection.persons || [])[0];
-        const menuItems = [
-          {
-            label: "사람 선택",
-            image: personTop?.image || "./images/outing_person_me.png",
-            action: "setOutingMode",
-            mode: "person",
-            isSelected: outingPickerMode === "person"
-          },
-          {
-            label: "장소 선택",
-            image: outingSelection.place?.image || "./images/outing_school1.png",
-            action: "setOutingMode",
-            mode: "place",
-            isSelected: outingPickerMode === "place"
-          },
-          {
-            label: "이동수단 선택",
-            image: outingSelection.transport?.image || "./images/transport_bus.png",
-            action: "setOutingMode",
-            mode: "transport",
-            isSelected: outingPickerMode === "transport"
-          },
-          { label: "모두 선택", icon: "✅", action: "outingSelectAll" },
-          { label: "리셋", icon: "↩️", action: "outingReset" }
-        ];
-        const selectedLabel = outingSelection[modeInfo.bucket]?.label || "";
-        const selectedPeople = new Set((outingSelection.persons || []).map((p) => p.label));
-        const choiceItems = modeInfo.src.map((it) => ({
-          label: it.label,
-          image: it.image,
-          nav: it.nav || "",
-          action: "selectOuting",
-          bucket: modeInfo.bucket,
-          isSelected: modeInfo.bucket === "persons" ? selectedPeople.has(it.label) : selectedLabel === it.label
-        }));
-        screen = {
-          ...screen,
-          helper: `${modeInfo.label} 아래에서 고르세요. 위에는 선택 결과가 표시됩니다.`,
-          items: [...menuItems, ...choiceItems],
-          layout: "main"
-        };
-      }
 
       titleEl.textContent = screen.title || "AAC";
       helperEl.textContent = screen.helper || "";
@@ -1482,15 +1431,7 @@
       crumbEl.textContent = crumb;
       crumbEl.style.display = crumb ? "block" : "none";
 
-      // 외출하기: 선택된 사람/장소/이동수단을 위쪽에 요약 아이콘으로 표시
-      let heroItems = screen.hero || [];
-      if (key === "outingHome") {
-        heroItems = [];
-        (outingSelection.persons || []).forEach((p) => heroItems.push(p));
-        if (outingSelection.place) heroItems.push(outingSelection.place);
-        if (outingSelection.transport) heroItems.push(outingSelection.transport);
-      }
-
+      const heroItems = screen.hero || [];
       renderHero(heroItems);
       helperEl.textContent = screen.helper || "";
 
