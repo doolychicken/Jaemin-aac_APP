@@ -202,6 +202,59 @@
       line-height: 1.05;
     }
 
+    /* ── 날짜 홈 ── */
+    .grid.date-home {
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      padding: 14px;
+      align-items: start;
+    }
+
+    .btn.date-sentence {
+      grid-column: 1 / -1;
+      font-size: clamp(1.1rem, 3.5vw, 1.6rem);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      min-height: 76px;
+      white-space: normal;
+      line-height: 1.3;
+    }
+
+    .tile.date-tile {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+    }
+
+    .tile.date-tile--empty .tile-art,
+    .tile.date-tile--empty .tile-label {
+      opacity: 0.4;
+    }
+
+    .tile.date-tile-weather {
+      border-color: var(--accent);
+      background: #fffbf0;
+    }
+
+    .btn.date-guardian-btn {
+      grid-column: 1 / -1;
+      font-size: 0.9rem;
+      opacity: 0.5;
+      min-height: 52px;
+      margin-top: 4px;
+    }
+
+    @media (min-width: 600px) {
+      .grid.date-home {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .btn.date-sentence {
+        grid-column: 1 / -1;
+      }
+      .btn.date-guardian-btn {
+        grid-column: 1 / -1;
+      }
+    }
+
     .tile {
       width: min(42vw, 270px);
       aspect-ratio: 1 / 1;
@@ -1418,8 +1471,10 @@
     const THERAPY_OPTIONS = ["언어", "인지", "음악", "연하", "작업", "물리"];
     const WEEKDAY_OPTIONS = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"];
     const WEATHER_OPTIONS = ["맑음", "흐림", "비", "눈", "바람"];
+    const WEATHER_EMOJI = { "맑음": "☀️", "흐림": "🌥️", "비": "🌧️", "눈": "❄️", "바람": "💨" };
     let outingPlannerMode = "";
     let datePlannerMode = "";
+    let guardianDateSetup = false;
     const outingSelection = {
       people: [],
       place: null,
@@ -1799,22 +1854,80 @@
       return `오늘은 ${month} ${day} ${weekday} ${weather}`;
     }
 
-    function renderDatePlanner() {
+    function renderDateHome() {
       appMainEl.classList.remove("app--spotlight");
       spotlightViewEl.style.display = "none";
       spotlightBtnEl.onclick = null;
-      heroEl.className = "hero outing-summary";
-      renderHero([
-        { label: `월: ${dateSelection.month ? `${dateSelection.month}월` : "미선택"}`, image: "./images/study.png", nav: "dateMonthPicker" },
-        { label: `일: ${dateSelection.day ? `${dateSelection.day}일` : "미선택"}`, image: "./images/study.png", nav: "dateDayPicker" },
-        { label: `요일: ${dateSelection.weekday || "미선택"}`, image: "./images/study.png", nav: "dateWeekdayPicker" },
-        { label: `날씨: ${dateSelection.weather || "미선택"}`, image: "./images/study.png", nav: "dateWeatherPicker" }
-      ]);
+      heroEl.style.display = "none";
+      heroEl.className = "hero";
 
       gridEl.style.display = "";
       gridEl.innerHTML = "";
-      gridEl.className = "grid outing-picker";
+      gridEl.className = "grid date-home";
+
+      const month = dateSelection.month ? `${dateSelection.month}월` : "몇 월";
+      const day = dateSelection.day ? `${dateSelection.day}일` : "몇 일";
+      const weekday = dateSelection.weekday || "무슨 요일";
+      const weather = dateSelection.weather || null;
+      const weatherEmoji = weather ? (WEATHER_EMOJI[weather] || "🌤️") : "🌤️";
+      const fullText = `오늘은 ${month} ${day} ${weekday}${weather ? " " + weather : ""}`;
+
+      // ── 전체 문장 버튼 (재민이가 눌러서 읽기) ──
+      const sentenceBtn = document.createElement("button");
+      sentenceBtn.className = "btn main date-sentence";
+      sentenceBtn.textContent = fullText;
+      sentenceBtn.addEventListener("click", () => speak(fullText));
+      gridEl.appendChild(sentenceBtn);
+
+      // ── 개별 날짜 타일 ──
+      const tiles = [
+        { label: month,                isSet: !!dateSelection.month,   emoji: "📅" },
+        { label: day,                  isSet: !!dateSelection.day,     emoji: "🔢" },
+        { label: weekday,              isSet: !!dateSelection.weekday, emoji: "📆" },
+        { label: weather || "날씨 선택", isSet: !!weather,              emoji: weatherEmoji, isWeather: true }
+      ];
+
+      tiles.forEach((tile) => {
+        const btn = document.createElement("button");
+        btn.className = "tile date-tile" +
+          (tile.isSet ? "" : " date-tile--empty") +
+          (tile.isWeather ? " date-tile-weather" : "");
+
+        const art = document.createElement("div");
+        art.className = "tile-art";
+        art.textContent = tile.emoji;
+
+        const lbl = document.createElement("div");
+        lbl.className = "tile-label";
+        lbl.textContent = tile.label;
+
+        btn.appendChild(art);
+        btn.appendChild(lbl);
+
+        btn.addEventListener("click", () => {
+          speak(tile.label);
+          if (tile.isWeather) {
+            pushScreen("dateWeatherPicker", "날씨 선택");
+            render();
+          }
+        });
+        gridEl.appendChild(btn);
+      });
+
+      // ── 보호자 날짜 설정 버튼 ──
+      const setupBtn = document.createElement("button");
+      setupBtn.className = "btn date-guardian-btn";
+      setupBtn.textContent = "📅 날짜 설정 (보호자)";
+      setupBtn.addEventListener("click", () => {
+        guardianDateSetup = true;
+        pushScreen("dateMonthPicker", "월 선택");
+        render();
+      });
+      gridEl.appendChild(setupBtn);
     }
+
+    // 이전 코드 호환용 alias
+    function renderDatePlanner() { renderDateHome(); }
 
     /** 아이패드에서 탭 직후 그리드가 비어 보이지 않도록, 다음에 올 가능성이 큰 화면 PNG를 선로딩 */
     function prefetchLikelyNextScreens(screenKey) {
@@ -1911,6 +2024,9 @@
             dateSelection.month = Number(item.label.replace("월", ""));
             speak(item.label);
             popScreen();
+            if (guardianDateSetup) {
+              pushScreen("dateDayPicker", "일 선택");
+            }
             render();
             return;
           }
@@ -1918,13 +2034,20 @@
             dateSelection.day = Number(item.label.replace("일", ""));
             speak(item.label);
             popScreen();
+            if (guardianDateSetup) {
+              pushScreen("dateWeekdayPicker", "요일 선택");
+            }
             render();
             return;
           }
           if (currentKey() === "dateWeekdayPicker") {
             dateSelection.weekday = item.label;
             speak(item.label);
-            popScreen();
+            guardianDateSetup = false;
+            // 보호자 설정 흐름 완료 → dateHome으로 돌아가기
+            while (currentKey() !== "dateHome" && navStack.length > 1) {
+              popScreen();
+            }
             render();
             return;
           }
