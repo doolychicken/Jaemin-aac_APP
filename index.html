@@ -40,6 +40,62 @@
       gap: 14px;
     }
 
+    .app.app--spotlight {
+      justify-content: flex-start;
+      gap: 10px;
+    }
+
+    /* 스티커북 말단: 빈 배경 + 선택한 카테고리 그림만 크게 (iPad 한 화면) */
+    .spotlight {
+      display: none;
+      flex: 1 1 auto;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 0;
+      padding: 0 0 max(12px, env(safe-area-inset-bottom));
+    }
+
+    .spotlight-button {
+      border: none;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      width: 100%;
+      max-width: 100%;
+      max-height: calc(100dvh - 200px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 20px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .spotlight-button:active {
+      transform: scale(1.02);
+    }
+
+    .spotlight-button img {
+      display: block;
+      max-width: 100%;
+      width: auto;
+      height: auto;
+      max-height: calc(100dvh - 200px);
+      object-fit: contain;
+      border-radius: 18px;
+      box-shadow: 0 16px 48px rgba(15, 23, 42, 0.14);
+      background: #fff;
+    }
+
+    @media (min-width: 768px) {
+      .spotlight-button,
+      .spotlight-button img {
+        max-height: calc(100dvh - 220px);
+      }
+    }
+
     .topbar {
       display: flex;
       align-items: center;
@@ -278,6 +334,11 @@
 
     <p id="helperText" class="muted">버튼을 누르면 음성으로 읽어줍니다.</p>
     <section id="heroRow" class="hero" style="display:none;"></section>
+    <section id="spotlightView" class="spotlight" style="display:none;" aria-label="선택한 그림">
+      <button type="button" id="spotlightButton" class="spotlight-button">
+        <img id="spotlightImage" alt="" />
+      </button>
+    </section>
     <section id="buttonGrid" class="grid"></section>
   </main>
 
@@ -373,13 +434,14 @@
         const k = `studySticker_${i + 1}`;
         rest[k] = {
           title: sub.label,
-          helper: "원하는 항목을 선택하세요.",
+          helper: "그림을 누르면 읽어 줘요.",
           hero: [],
-          items: Array.from({ length: 6 }, (_, j) => ({
-            label: `${sub.label} · ${j + 1}번`,
-            image: sub.image
-          })),
-          layout: "main",
+          items: [],
+          layout: "spotlight",
+          spotlight: {
+            image: sub.image,
+            label: sub.label
+          },
           showPlayer: false
         };
       });
@@ -918,6 +980,10 @@
     const backBtn = document.getElementById("backButton");
     const crumbEl = document.getElementById("breadcrumb");
     const gridEl = document.getElementById("buttonGrid");
+    const appMainEl = document.querySelector("main.app");
+    const spotlightViewEl = document.getElementById("spotlightView");
+    const spotlightBtnEl = document.getElementById("spotlightButton");
+    const spotlightImgEl = document.getElementById("spotlightImage");
     const helperEl = document.getElementById("helperText");
     const heroEl = document.getElementById("heroRow");
     const playerWrapEl = document.getElementById("playerWrap");
@@ -1074,6 +1140,9 @@
       if (!screen) return;
       (screen.hero || []).forEach((it) => prefetchLocalImage(it.image));
       (screen.items || []).forEach((it) => prefetchLocalImage(it.image));
+      if (screen.spotlight && screen.spotlight.image) {
+        prefetchLocalImage(screen.spotlight.image);
+      }
     }
 
     /** 아이패드에서 탭 직후 그리드가 비어 보이지 않도록, 다음에 올 가능성이 큰 화면 PNG를 선로딩 */
@@ -1232,7 +1301,25 @@
         playerEl.src = "";
       }
 
-      renderButtons(screen.items || [], screen.layout || (isMain ? "main" : "detail"));
+      const isSpotlight = screen.layout === "spotlight" && screen.spotlight && screen.spotlight.image;
+      if (isSpotlight) {
+        appMainEl.classList.add("app--spotlight");
+        spotlightViewEl.style.display = "flex";
+        gridEl.style.display = "none";
+        gridEl.innerHTML = "";
+        spotlightImgEl.src = screen.spotlight.image;
+        spotlightImgEl.alt = screen.spotlight.label || screen.title || "";
+        setupImageElement(spotlightImgEl, true);
+        const spotLabel = screen.spotlight.label || screen.title || "";
+        spotlightBtnEl.setAttribute("aria-label", `${spotLabel}, 눌러서 읽기`);
+        spotlightBtnEl.onclick = () => speak(spotLabel);
+      } else {
+        appMainEl.classList.remove("app--spotlight");
+        spotlightViewEl.style.display = "none";
+        spotlightBtnEl.onclick = null;
+        gridEl.style.display = "";
+        renderButtons(screen.items || [], screen.layout || (isMain ? "main" : "detail"));
+      }
 
       requestAnimationFrame(() => {
         prefetchLikelyNextScreens(key);
