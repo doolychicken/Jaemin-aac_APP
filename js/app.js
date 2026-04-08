@@ -275,6 +275,11 @@ function renderOutingPlanner() {
       }
       btn.addEventListener("click", () => {
         speak(item.label);
+        if (item.subScreen) {
+          pushScreen(item.subScreen, item.label);
+          render();
+          return;
+        }
         toggleOutingSelection(outingPlannerMode, item);
         render();
       });
@@ -764,6 +769,35 @@ function render() {
       titleEl.textContent = modeTitle[outingPlannerMode] || "선택";
     }
     renderOutingPlanner();
+  } else if (key === "outingCarTypes") {
+    // 자동차 서브 선택 → 고르면 transport로 저장 후 outingHome으로 복귀
+    appMainEl.classList.remove("app--spotlight");
+    spotlightViewEl.style.display = "none";
+    heroEl.style.display = "none";
+    gridEl.style.display = "";
+    gridEl.innerHTML = "";
+    gridEl.className = "grid";
+    (screen.items || []).forEach((item) => {
+      const btn = document.createElement("button");
+      btn.className = "tile";
+      const img = document.createElement("img");
+      img.src = item.image || "./images/transport_car.png";
+      img.alt = item.label;
+      setupImageElement(img, true);
+      const lbl = document.createElement("div");
+      lbl.className = "tile-label";
+      lbl.textContent = item.label;
+      btn.appendChild(img);
+      btn.appendChild(lbl);
+      btn.addEventListener("click", () => {
+        speak(item.label);
+        outingSelection.transport = { label: item.label, image: item.image || "./images/transport_car.png" };
+        outingPlannerMode = "";
+        while (currentKey() !== "outingHome" && navStack.length > 1) popScreen();
+        render();
+      });
+      gridEl.appendChild(btn);
+    });
   } else if (key === "dateHome") {
     renderDateHome();
   } else if (screen.layout === "therapyCenterPicker") {

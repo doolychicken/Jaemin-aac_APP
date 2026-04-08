@@ -740,12 +740,23 @@ const DATA = {
       hero: [],
       items: [
         { label: "걸어서",      image: "./images/transport_walk.png" },
-        { label: "아빠차",      image: "./images/dadcar.png" },
-        { label: "자동차",      image: "./images/transport_car.png" },
+        { label: "자동차",      image: "./images/transport_car.png", subScreen: "outingCarTypes" },
         { label: "버스",        image: "./images/bus.png" },
         { label: "지하철",      image: "./images/transport_subway_JM.png" },
         { label: "자전거",      image: "./images/transport_bike.png" },
         { label: "장애인콜택시", image: "./images/transport_calltaxi.png" }
+      ],
+      layout: "main",
+      showPlayer: false
+    },
+
+    outingCarTypes: {
+      title: "자동차 종류",
+      helper: "어떤 차를 탈까요?",
+      hero: [],
+      items: [
+        { label: "아빠차", image: "./images/dadcar.png" },
+        { label: "자동차", image: "./images/transport_car.png" }
       ],
       layout: "main",
       showPlayer: false
