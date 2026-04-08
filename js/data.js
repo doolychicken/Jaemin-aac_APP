@@ -629,7 +629,7 @@ const DATA = {
       helper: "사람, 장소, 이동수단을 선택할 수 있어요.",
       hero: [
         { label: "버스",   image: "./images/outing.png" },
-        { label: "아빠차", image: "./images/dadcar.png" }
+        { label: "아빠차", image: "./images/dad car.png" }
       ],
       items: [
         { label: "사람 선택",    nav: "outingPerson" },
@@ -740,7 +740,7 @@ const DATA = {
       hero: [],
       items: [
         { label: "걸어서",      image: "./images/transport_walk.png" },
-        { label: "자동차",      image: "./images/transport_car.png", subScreen: "outingCarTypes" },
+        { label: "자동차 키",    image: "./images/dad_carkey.png",   subScreen: "outingCarTypes" },
         { label: "버스",        image: "./images/bus.png" },
         { label: "지하철",      image: "./images/transport_subway_JM.png" },
         { label: "자전거",      image: "./images/transport_bike.png" },
@@ -755,8 +755,9 @@ const DATA = {
       helper: "어떤 차를 탈까요?",
       hero: [],
       items: [
-        { label: "아빠차", image: "./images/dadcar.png" },
-        { label: "자동차", image: "./images/transport_car.png" }
+        { label: "아빠차",  image: "./images/dad car.png" },
+        { label: "자동차1", image: "./images/transport_car.png" },
+        { label: "자동차2", image: "./images/transport_car.png" }
       ],
       layout: "main",
       showPlayer: false
