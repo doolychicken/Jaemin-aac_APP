@@ -740,7 +740,7 @@ const DATA = {
       hero: [],
       items: [
         { label: "걸어서",      image: "./images/transport_walk.png" },
-        { label: "자동차",      image: "./images/transport_car.png" },
+        { label: "자동차",      image: "./images/dadcar.png" },
         { label: "버스",        image: "./images/transport_bus.png" },
         { label: "지하철",      image: "./images/transport_subway.png" },
         { label: "자전거",      image: "./images/transport_bike.png" },
