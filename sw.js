@@ -4,7 +4,7 @@
  * On first visit, pre-caches all images so subsequent loads are instant.
  */
 
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const CACHE_NAME = `jaemin-aac-${CACHE_VERSION}`;
 
 const PRECACHE_ASSETS = [
@@ -18,7 +18,8 @@ const PRECACHE_ASSETS = [
   './images/bannana.png',
   './images/brush.png',
   './images/bus.png',
-  './images/dadcar.png',
+  './images/dad car.png',
+  './images/dad_carkey.png',
   './images/eggs.png',
   './images/grape.png',
   './images/grape1.png',
@@ -97,6 +98,7 @@ const PRECACHE_ASSETS = [
   './images/transport_calltaxi.png',
   './images/transport_car.png',
   './images/transport_subway.png',
+  './images/transport_subway_JM.png',
   './images/transport_walk.png',
   './images/wash_face.png',
   './images/wash_hands.png',
