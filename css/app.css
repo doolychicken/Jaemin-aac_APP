@@ -148,48 +148,75 @@ body {
   justify-items: center;
 }
 
-.hero.outing-summary {
+/* ── 외출하기 요약 타일 3개 ── */
+.grid.outing-summary-tiles {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  padding: 14px;
+  align-items: start;
+}
+
+.grid.outing-summary-tiles .outing-summary-tile {
+  width: 100%;
+  aspect-ratio: 1 / 1.1;
+  border-radius: 20px;
+  padding: 10px;
   gap: 8px;
-  justify-items: center;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,.10);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
 }
 
-.hero.outing-summary .tile {
-  width: min(30vw, 170px);
-  border-radius: 16px;
-  padding: 8px;
-  gap: 6px;
+.grid.outing-summary-tiles .outing-summary-tile img {
+  width: 100%;
+  flex: 1;
+  object-fit: contain;
+  border-radius: 12px;
 }
 
-.hero.outing-summary .tile img {
+.grid.outing-summary-tiles .tile-label {
+  font-size: clamp(0.72rem, 1.8vw, 0.92rem);
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+  color: #222;
+}
+
+/* 사람 사진 격자 (1~4명) */
+.outing-person-photos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  width: 100%;
+  flex: 1;
+}
+.outing-person-photos img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
   border-radius: 10px;
 }
-
-.hero.outing-summary .tile-label {
-  font-size: 0.78rem;
-  line-height: 1.05;
+/* 1명: 전체 폭 */
+.outing-person-photos:has(img:only-child) {
+  grid-template-columns: 1fr;
 }
-
-.grid.outing-picker {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  justify-items: center;
+/* 3명: 첫 번째가 세로 2칸 */
+.outing-person-photos:has(img:nth-child(3)):not(:has(img:nth-child(4))) img:first-child {
+  grid-row: span 2;
 }
-
-.grid.outing-picker .tile {
-  width: min(30vw, 180px);
-  border-radius: 16px;
-  padding: 8px;
-  gap: 6px;
+/* 4명: 2×2 균등 */
+.outing-person-photos:has(img:nth-child(4)) {
+  grid-template-columns: repeat(2, 1fr);
 }
-
-.grid.outing-picker .tile img {
-  border-radius: 10px;
-}
-
-.grid.outing-picker .tile-label {
-  font-size: 0.8rem;
-  line-height: 1.05;
+/* 비어있을 때 */
+.outing-person-empty {
+  grid-template-columns: 1fr;
+  opacity: 0.45;
 }
 
 /* ── 날짜 홈 ── */

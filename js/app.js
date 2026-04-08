@@ -34,7 +34,7 @@ function breadcrumbText() {
 }
 
 // ── 외출 플래너 상태 ─────────────────────────────────────────────────────────
-const OUTING_MAX_PERSON = 3;
+const OUTING_MAX_PERSON = 4;
 let outingPlannerMode = "";
 const outingSelection = { people: [], place: null, transport: null };
 
@@ -247,64 +247,125 @@ function renderOutingPlanner() {
   appMainEl.classList.remove("app--spotlight");
   spotlightViewEl.style.display = "none";
   spotlightBtnEl.onclick = null;
+  heroEl.style.display = "none";
+  heroEl.className = "hero";
   gridEl.style.display = "";
-  heroEl.className = "hero outing-summary";
-  renderHero(getOutingHeroItems());
   gridEl.innerHTML = "";
-  gridEl.className = "grid outing-picker";
 
-  if (!outingPlannerMode) {
-    [
-      { kind: "person",    label: `사람 선택 (${outingSelection.people.length}/${OUTING_MAX_PERSON})` },
-      { kind: "place",     label: `장소 선택 (${outingSelection.place     ? "완료" : "미선택"})` },
-      { kind: "transport", label: `이동수단 선택 (${outingSelection.transport ? "완료" : "미선택"})` }
-    ].forEach((info) => {
+  if (outingPlannerMode) {
+    // ── 선택 화면: 항목들 표시 ──
+    gridEl.className = "grid";
+    outingOptions(outingPlannerMode).forEach((item) => {
       const btn = document.createElement("button");
-      btn.className = "btn main";
-      btn.textContent = info.label;
+      btn.className = "tile" + (isOutingSelected(outingPlannerMode, item) ? " is-selected" : "");
+      const img = document.createElement("img");
+      img.src = item.image || "./images/study.png";
+      img.alt = item.label;
+      setupImageElement(img, true);
+      const lbl = document.createElement("div");
+      lbl.className = "tile-label";
+      lbl.textContent = item.label;
+      btn.appendChild(img);
+      btn.appendChild(lbl);
+      if (isOutingSelected(outingPlannerMode, item)) {
+        const check = document.createElement("span");
+        check.className = "tile-check";
+        check.textContent = "✓";
+        btn.appendChild(check);
+      }
       btn.addEventListener("click", () => {
-        speak(info.label.replace(/\s*\(.+\)$/, ""));
-        outingPlannerMode = info.kind;
+        speak(item.label);
+        toggleOutingSelection(outingPlannerMode, item);
         render();
       });
       gridEl.appendChild(btn);
     });
+
+    if (outingPlannerMode === "person") {
+      const doneBtn = document.createElement("button");
+      doneBtn.className = "btn";
+      doneBtn.textContent = "선택 완료";
+      doneBtn.addEventListener("click", () => {
+        speak("사람 선택 완료");
+        outingPlannerMode = "";
+        render();
+      });
+      gridEl.appendChild(doneBtn);
+    }
     return;
   }
 
-  outingOptions(outingPlannerMode).forEach((item) => {
+  // ── 메인 요약 화면: 3개 타일 ──
+  gridEl.className = "grid outing-summary-tiles";
+  const tiles = [
+    {
+      kind: "person",
+      title: "사람",
+      image: outingSelection.people.length
+        ? outingSelection.people[0].image
+        : "./images/outing_person_me.png",
+      subtitle: outingSelection.people.length
+        ? outingSelection.people.map((p) => p.label).join(", ")
+        : "눌러서 선택",
+    },
+    {
+      kind: "place",
+      title: "장소",
+      image: outingSelection.place?.image || "./images/outing_school1.png",
+      subtitle: outingSelection.place?.label || "눌러서 선택",
+    },
+    {
+      kind: "transport",
+      title: "이동수단",
+      image: outingSelection.transport?.image || "./images/transport_bus.png",
+      subtitle: outingSelection.transport?.label || "눌러서 선택",
+    },
+  ];
+
+  tiles.forEach(({ kind, title, image, subtitle }) => {
     const btn = document.createElement("button");
-    btn.className = "tile" + (isOutingSelected(outingPlannerMode, item) ? " is-selected" : "");
-    const img = document.createElement("img");
-    img.src = item.image || "./images/study.png";
-    img.alt = item.label;
-    setupImageElement(img, true);
-    const label = document.createElement("div");
-    label.className = "tile-label";
-    label.textContent = item.label;
-    btn.appendChild(img);
-    btn.appendChild(label);
-    if (isOutingSelected(outingPlannerMode, item)) {
-      const check = document.createElement("span");
-      check.className = "tile-check";
-      check.textContent = "✓";
-      btn.appendChild(check);
+    btn.className = "tile outing-summary-tile";
+
+    if (kind === "person") {
+      // 선택된 사람이 있으면 최대 3명 사진을 격자로 표시
+      const people = outingSelection.people;
+      const photoWrap = document.createElement("div");
+      photoWrap.className = "outing-person-photos" + (people.length === 0 ? " outing-person-empty" : "");
+      if (people.length === 0) {
+        const img = document.createElement("img");
+        img.src = "./images/outing_person_me.png";
+        img.alt = "사람";
+        setupImageElement(img, true);
+        photoWrap.appendChild(img);
+      } else {
+        people.forEach((p) => {
+          const img = document.createElement("img");
+          img.src = p.image;
+          img.alt = p.label;
+          setupImageElement(img, true);
+          photoWrap.appendChild(img);
+        });
+      }
+      btn.appendChild(photoWrap);
+    } else {
+      const img = document.createElement("img");
+      img.src = image;
+      img.alt = title;
+      setupImageElement(img, true);
+      btn.appendChild(img);
     }
+
+    const lbl = document.createElement("div");
+    lbl.className = "tile-label";
+    lbl.textContent = `${title}: ${subtitle}`;
+    btn.appendChild(lbl);
     btn.addEventListener("click", () => {
-      speak(item.label);
-      toggleOutingSelection(outingPlannerMode, item);
+      speak(title);
+      outingPlannerMode = kind;
       render();
     });
     gridEl.appendChild(btn);
   });
-
-  if (outingPlannerMode === "person") {
-    const doneBtn = document.createElement("button");
-    doneBtn.className = "btn";
-    doneBtn.textContent = "사람 선택 완료";
-    doneBtn.addEventListener("click", () => { speak("사람 선택 완료"); outingPlannerMode = ""; render(); });
-    gridEl.appendChild(doneBtn);
-  }
 }
 
 // ── 치료 선택 ────────────────────────────────────────────────────────────────
@@ -698,6 +759,10 @@ function render() {
   const isEmpty     = screen.layout === "empty";
 
   if (key === "outingHome") {
+    if (outingPlannerMode) {
+      const modeTitle = { person: "사람 선택", place: "장소 선택", transport: "이동수단 선택" };
+      titleEl.textContent = modeTitle[outingPlannerMode] || "선택";
+    }
     renderOutingPlanner();
   } else if (key === "dateHome") {
     renderDateHome();
@@ -739,6 +804,11 @@ function render() {
 // ── 이벤트 핸들러 ────────────────────────────────────────────────────────────
 backBtn.addEventListener("click", () => {
   speak("뒤로 가기");
+  if (currentKey() === "outingHome" && outingPlannerMode) {
+    outingPlannerMode = "";
+    render();
+    return;
+  }
   popScreen();
   selectedYoutube = "";
   render();
