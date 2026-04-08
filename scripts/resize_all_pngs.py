@@ -15,7 +15,7 @@ try:
 except ImportError:
     sys.exit("Pillow is not installed.  Run:  pip install Pillow")
 
-MAX_SIDE = 480          # longest side in pixels — good balance for iPad Retina tiles
+MAX_SIDE = 400          # longest side in pixels — good balance for iPad Retina tiles
 ROOT = Path(__file__).resolve().parent.parent / "images"
 
 SKIP_PATTERNS = [
@@ -38,9 +38,10 @@ def resize_one(path: Path, dry_run: bool = False) -> tuple[int, int]:
     longest = max(w, h)
     scale = min(MAX_SIDE / longest, 1.0)
 
-    if scale < 1.0 and not dry_run:
-        im = im.resize((int(w * scale), int(h * scale)), Image.Resampling.LANCZOS)
-        im.save(path, format="PNG", optimize=True)
+    if not dry_run:
+        if scale < 1.0:
+            im = im.resize((int(w * scale), int(h * scale)), Image.Resampling.LANCZOS)
+        im.save(path, format="PNG", optimize=True, compress_level=9)
         new_kb = path.stat().st_size // 1024
     else:
         new_kb = orig_kb

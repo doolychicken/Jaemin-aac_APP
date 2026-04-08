@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
@@ -44,5 +44,13 @@
 
   <script src="./js/data.js"></script>
   <script src="./js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .catch(() => {/* silent fail on non-HTTPS dev */});
+      });
+    }
+  </script>
 </body>
 </html>
