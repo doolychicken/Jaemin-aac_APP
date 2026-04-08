@@ -4,7 +4,7 @@
  * On first visit, pre-caches all images so subsequent loads are instant.
  */
 
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v5';
 const CACHE_NAME = `jaemin-aac-${CACHE_VERSION}`;
 
 const PRECACHE_ASSETS = [
@@ -33,6 +33,11 @@ const PRECACHE_ASSETS = [
   './images/knobpuzzle_shapes2.png',
   './images/knobpuzzle_vehicles.png',
   './images/meal.png',
+  './images/meal_rice.png',
+  './images/meal_juice.png',
+  './images/meal_milk.png',
+  './images/meal_soymilk.png',
+  './images/meal_eggtart.png',
   './images/orange.png',
   './images/outing.png',
   './images/outing_bakery.png',
