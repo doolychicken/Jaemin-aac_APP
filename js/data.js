@@ -602,15 +602,15 @@ const DATA = {
       helper: "원하는 것을 선택하세요.",
       hero: [],
       items: [
-        { label: "밥",      image: "./images/meal_rice.png" },
-        { label: "물",      image: "./images/meal_water.png" },
-        { label: "주스",    image: "./images/meal_juice.png" },
-        { label: "우유",    image: "./images/meal_milk.png" },
-        { label: "두유",    image: "./images/meal_soymilk.png" },
+        { label: "밥",         image: "./images/meal_rice.png" },
+        { label: "물",         image: "./images/meal_water.png" },
+        { label: "주스",       image: "./images/meal_juice.png" },
+        { label: "우유",       image: "./images/meal_milk.png" },
+        { label: "두유",       image: "./images/meal_soymilk.png" },
         { label: "에그타르트", image: "./images/meal_eggtart.png" },
-        { label: "우쿠렐레", image: "./images/ukulele.png" }
+        { label: "우쿠렐레",   image: "./images/ukulele.png" }
       ],
-      layout: "detail"
+      layout: "main"
     },
 
     toilet: {
