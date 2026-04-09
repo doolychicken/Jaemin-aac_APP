@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://img.youtube.com" />
   <link rel="preconnect" href="https://i.ytimg.com" />
   <title>AAC 앱</title>
-  <link rel="stylesheet" href="./css/app.css" />
+  <link rel="stylesheet" href="./css/app.css?v=7" />
 </head>
 <body>
   <main class="app">
@@ -17,7 +17,10 @@
         <h1 id="screenTitle" class="title">메인 화면</h1>
         <p id="breadcrumb" class="crumb" style="display:none;"></p>
       </div>
-      <button id="backButton" class="back-btn" style="display:none;">뒤로 가기</button>
+      <div class="topbar-btns">
+        <button id="homeButton" class="home-btn" style="display:none;">🏠 홈</button>
+        <button id="backButton" class="back-btn" style="display:none;">뒤로 가기</button>
+      </div>
     </div>
 
     <section id="playerWrap" class="player-wrap" style="display:none;">
@@ -42,8 +45,8 @@
     <section id="buttonGrid" class="grid"></section>
   </main>
 
-  <script src="./js/data.js"></script>
-  <script src="./js/app.js"></script>
+  <script src="./js/data.js?v=7"></script>
+  <script src="./js/app.js?v=7"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
