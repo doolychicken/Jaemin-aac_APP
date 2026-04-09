@@ -310,13 +310,26 @@ body {
   border-radius: 22px;
   border: 2px solid var(--border);
   background: #fff;
-  padding: 12px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   cursor: pointer;
   box-shadow: 0 10px 26px rgba(15, 23, 42, 0.10);
   transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+  /* 터치 감도 향상: 최소 터치 크기 보장 */
+  min-width: 80px;
+  min-height: 80px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(37, 99, 235, 0.15);
+  /* 터치 영역 외부 확장 (보이지 않는 영역까지 터치 인식) */
+  position: relative;
+}
+
+.tile::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
 }
 
 .tile:active {
@@ -335,7 +348,7 @@ body {
 }
 
 .tile-label {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 800;
   color: #0f172a;
   text-align: center;
@@ -408,9 +421,11 @@ body {
   font-weight: 700;
   color: #0f172a;
   cursor: pointer;
-  padding: 14px;
+  padding: 18px;
   line-height: 1.25;
   box-shadow: 0 2px 8px rgba(31, 41, 55, 0.06);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(37, 99, 235, 0.15);
 }
 
 .btn.main {
