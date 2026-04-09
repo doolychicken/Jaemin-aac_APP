@@ -300,7 +300,7 @@ const DATA = {
         { label: "학교",      nav: "outingSchool", image: "./images/school_classroom.png" },
         { label: "스케줄표",  nav: "scheduleHome", image: "./images/outing_school1.png" },
         { label: "날짜",      nav: "dateHome",     image: "./images/outing_park1.png" },
-        { label: "다음 ▶",   nav: "main_p2",      icon: "▶" }
+        { label: "다음",      nav: "main_p2",      image: "./images/outing.png" }
       ],
       layout: "main"
     },
@@ -315,7 +315,7 @@ const DATA = {
         { label: "과목",      nav: "subjectHome", icon: "📚" },
         { label: "사람",      nav: "peopleHome",  image: "./images/outing_person_me.png" },
         { label: "휴식",      icon: "🛋️" },
-        { label: "◀ 이전",   nav: "main",        icon: "◀" }
+        { label: "이전",      nav: "main",        image: "./images/home.png" }
       ],
       layout: "main",
       showPlayer: false
