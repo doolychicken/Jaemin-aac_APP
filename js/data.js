@@ -344,8 +344,7 @@ const DATA = {
       helper: "스케줄 관련 항목을 선택하세요.",
       hero: [],
       items: [
-        { label: "오늘 일정",   nav: "scheduleToday",   image: "./images/outing_school1.png" },
-        { label: "금요일 일정", nav: "scheduleFriday",  image: "./images/transport_calltaxi.png" },
+        { label: "오늘 일정", nav: "scheduleToday", image: "./images/outing_school1.png" },
         { label: "내일 일정" },
         { label: "이번 주" }
       ],
