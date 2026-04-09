@@ -294,13 +294,13 @@ const DATA = {
       helper: "버튼을 누르면 음성으로 읽어줍니다.",
       hero: [],
       items: [
-        { label: "아이패드",   nav: "ipadHome",    image: "./images/ipad.png" },
-        { label: "밥 먹기",   nav: "meal",        image: "./images/meal.png" },
-        { label: "화장실",    nav: "toilet",      image: "./images/toilet.png" },
-        { label: "외출하기",  nav: "outingHome",  image: "./images/outing.png" },
-        { label: "공부하기",  nav: "studyHome",   image: "./images/study.png" },
-        { label: "학교",      nav: "outingSchool",image: "./images/school_classroom.png" },
-        { label: "다음",      nav: "main_p2",     image: "./images/study.png" }
+        { label: "아이패드",   nav: "ipadHome",     image: "./images/ipad.png" },
+        { label: "밥 먹기",   nav: "meal",         image: "./images/meal.png" },
+        { label: "화장실",    nav: "toilet",       image: "./images/toilet.png" },
+        { label: "학교",      nav: "outingSchool", image: "./images/school_classroom.png" },
+        { label: "스케줄표",  nav: "scheduleHome", image: "./images/outing_school1.png" },
+        { label: "날짜",      nav: "dateHome",     image: "./images/outing_park1.png" },
+        { label: "다음 ▶",   nav: "main_p2",      icon: "▶" }
       ],
       layout: "main"
     },
@@ -310,12 +310,12 @@ const DATA = {
       helper: "추가 카테고리를 선택하세요.",
       hero: [],
       items: [
-        { label: "스케줄표", nav: "scheduleHome", icon: "📅" },
-        { label: "과목",    nav: "subjectHome",  icon: "📚" },
-        { label: "날짜",    nav: "dateHome",     icon: "📆" },
-        { label: "사람",    nav: "peopleHome",   image: "./images/outing_person_me.png" },
-        { label: "휴식",    icon: "🛋️" },
-        { label: "이전",    nav: "main",         image: "./images/study.png" }
+        { label: "외출하기",  nav: "outingHome",  image: "./images/outing.png" },
+        { label: "공부하기",  nav: "studyHome",   image: "./images/study.png" },
+        { label: "과목",      nav: "subjectHome", icon: "📚" },
+        { label: "사람",      nav: "peopleHome",  image: "./images/outing_person_me.png" },
+        { label: "휴식",      icon: "🛋️" },
+        { label: "◀ 이전",   nav: "main",        icon: "◀" }
       ],
       layout: "main",
       showPlayer: false
@@ -355,10 +355,22 @@ const DATA = {
 
     scheduleToday: {
       title: "오늘 일정",
+      helper: "요일을 선택하세요.",
+      hero: [],
+      items: [
+        { label: "월~목 일정", nav: "scheduleMTh",    image: "./images/outing_school1.png" },
+        { label: "금요일 일정", nav: "scheduleFriday", image: "./images/transport_calltaxi.png" }
+      ],
+      layout: "main",
+      showPlayer: false
+    },
+
+    scheduleMTh: {
+      title: "월~목 일정",
       helper: "순서대로 눌러 말해 보세요. (치료실은 선택)",
       hero: [],
       items: [
-        { label: "1. 학교가요",          image: "./images/outing_school1.png" },
+        { label: "1. 학교가요",           image: "./images/outing_school1.png" },
         { label: "2. 장애인 콜택시 타요",  image: "./images/transport_calltaxi.png" },
         { label: "3. 치료실 선택",         nav: "scheduleTodayTherapy" },
         { label: "4. 장애인 콜택시 타요",  image: "./images/transport_calltaxi.png" },
@@ -370,14 +382,14 @@ const DATA = {
 
     scheduleFriday: {
       title: "금요일 일정",
-      helper: "순서대로 눌러 말해 보세요.",
+      helper: "순서대로 눌러 말해 보세요. (치료실은 선택)",
       hero: [],
       items: [
-        { label: "1. 치료실 가요",          image: "./images/therapy_center_severance.png" },
+        { label: "1. 치료실 선택",          nav: "scheduleTodayTherapy" },
         { label: "2. 장애인 콜택시 타요",   image: "./images/transport_calltaxi.png" },
         { label: "3. 학교 가요",            image: "./images/outing_school1.png" },
         { label: "4. 장애인 콜택시 타요",   image: "./images/transport_calltaxi.png" },
-        { label: "5. 치료실 가요",          image: "./images/therapy_center_severance.png" },
+        { label: "5. 치료실 선택",          nav: "scheduleTodayTherapy" },
         { label: "6. 장애인 콜택시 타요",   image: "./images/transport_calltaxi.png" },
         { label: "7. 집에 와요",            image: "./images/home.png" }
       ],
