@@ -110,10 +110,12 @@ function speak(text) {
   }
   u.rate = 0.95;
   u.pitch = 1.0;
-  // 안드로이드: 음성 합성이 멈추는 버그를 resume()으로 방지
+  // 안드로이드: 딜레이 없이 speak하면 무시되는 버그 방지
   if (isAndroid) {
-    window.speechSynthesis.speak(u);
-    window.speechSynthesis.resume();
+    setTimeout(() => {
+      window.speechSynthesis.resume();
+      window.speechSynthesis.speak(u);
+    }, 50);
   } else {
     window.speechSynthesis.speak(u);
   }
