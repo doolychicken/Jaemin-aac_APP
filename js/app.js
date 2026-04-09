@@ -79,9 +79,11 @@ const useDirectYoutubeOpen = true;
 
 const isAndroid = /android/i.test(navigator.userAgent);
 
+// ── 1. 한국어 목소리 선택 (fallback: default 목소리) ─────────────────────────
 function pickPreferredKoVoice() {
   if (!("speechSynthesis" in window)) return null;
   const voices = window.speechSynthesis.getVoices() || [];
+  if (!voices.length) return null;
   const koVoices = voices.filter((v) => (v.lang || "").toLowerCase().startsWith("ko"));
   if (koVoices.length) {
     const priorities = [/female/i, /woman/i, /여성/, /google/i, /premium|neural|natural/i];
@@ -91,47 +93,56 @@ function pickPreferredKoVoice() {
     }
     return koVoices[0];
   }
-  // 한국어 음성이 없으면 사용 가능한 아무 음성이나 사용
-  return voices[0] || null;
+  // 한국어 없으면 브라우저 기본(default) 목소리 우선, 없으면 첫 번째
+  return voices.find((v) => v.default) || voices[0] || null;
 }
 
+// ── 2. speak: 안드로이드 정교한 예외 처리 ────────────────────────────────────
 function speak(text) {
   if (!("speechSynthesis" in window)) return;
-  // 안드로이드: 백그라운드에서 멈추는 버그 방지
-  if (isAndroid) window.speechSynthesis.cancel();
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
   if (!preferredKoVoice) preferredKoVoice = pickPreferredKoVoice();
-  if (preferredKoVoice) {
-    u.voice = preferredKoVoice;
-    u.lang = preferredKoVoice.lang || "ko-KR";
-  } else {
-    u.lang = "ko-KR";
-  }
-  u.rate = 0.95;
-  u.pitch = 1.0;
-  // 안드로이드: 딜레이 없이 speak하면 무시되는 버그 방지
-  if (isAndroid) {
-    setTimeout(() => {
-      window.speechSynthesis.resume();
-      window.speechSynthesis.speak(u);
-    }, 50);
-  } else {
+
+  const doSpeak = () => {
+    const u = new SpeechSynthesisUtterance(text);
+    if (preferredKoVoice) {
+      u.voice = preferredKoVoice;
+      u.lang = preferredKoVoice.lang || "ko-KR";
+    } else {
+      u.lang = "ko-KR";
+    }
+    u.rate = 0.95;
+    u.pitch = 1.0;
+    window.speechSynthesis.resume();
     window.speechSynthesis.speak(u);
+  };
+
+  if (isAndroid) {
+    // 안드로이드: 재생 중일 때만 cancel, 아닐 때는 바로 재생
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      setTimeout(doSpeak, 80);
+    } else {
+      setTimeout(doSpeak, 50);
+    }
+  } else {
+    window.speechSynthesis.cancel();
+    doSpeak();
   }
 }
 
+// ── 3. warmupTTS: 첫 터치 시 오디오 엔진 강제 활성화 ─────────────────────────
 function warmupTTS() {
   if (!("speechSynthesis" in window) || ttsWarmedUp) return;
   ttsWarmedUp = true;
   if (!preferredKoVoice) preferredKoVoice = pickPreferredKoVoice();
-  // 안드로이드: 첫 터치에서 음성 엔진 잠금 해제
-  const warm = new SpeechSynthesisUtterance(" ");
+  const warm = new SpeechSynthesisUtterance("\u200b"); // 제로폭 공백
   warm.lang = preferredKoVoice?.lang || "ko-KR";
   if (preferredKoVoice) warm.voice = preferredKoVoice;
-  warm.volume = 0; warm.rate = 1.0; warm.pitch = 1.0;
+  warm.volume = 0;
+  warm.rate = 1.0;
+  window.speechSynthesis.resume();
   window.speechSynthesis.speak(warm);
-  setTimeout(() => window.speechSynthesis.cancel(), 100);
+  setTimeout(() => window.speechSynthesis.cancel(), 200);
 }
 
 // ── YouTube 유틸 ─────────────────────────────────────────────────────────────
@@ -874,15 +885,19 @@ openInYoutubeButton.addEventListener("click", () => {
   openYoutubeDirect(selectedYoutube);
 });
 
+// ── 4. 목소리 강제 로딩: 0.2초 간격으로 계속 확인 ───────────────────────────
 if ("speechSynthesis" in window) {
-  window.speechSynthesis.onvoiceschanged = () => { preferredKoVoice = pickPreferredKoVoice(); };
+  window.speechSynthesis.onvoiceschanged = () => {
+    preferredKoVoice = pickPreferredKoVoice();
+  };
   preferredKoVoice = pickPreferredKoVoice();
-  // Edge/Chrome 에서 음성 목록이 늦게 로드될 때를 대비해 재시도
+  // Chrome/Android: getVoices()가 빈 배열을 반환할 때를 대비해 0.2초 간격으로 재시도
   let voiceRetry = 0;
   const voiceTimer = setInterval(() => {
-    if (preferredKoVoice || voiceRetry++ > 10) { clearInterval(voiceTimer); return; }
-    preferredKoVoice = pickPreferredKoVoice();
-  }, 500);
+    const v = pickPreferredKoVoice();
+    if (v) { preferredKoVoice = v; clearInterval(voiceTimer); return; }
+    if (voiceRetry++ > 30) clearInterval(voiceTimer); // 최대 6초
+  }, 200);
 }
 
 window.addEventListener("pointerdown", warmupTTS, { once: true });
