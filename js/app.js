@@ -864,6 +864,12 @@ openInYoutubeButton.addEventListener("click", () => {
 if ("speechSynthesis" in window) {
   window.speechSynthesis.onvoiceschanged = () => { preferredKoVoice = pickPreferredKoVoice(); };
   preferredKoVoice = pickPreferredKoVoice();
+  // Edge/Chrome 에서 음성 목록이 늦게 로드될 때를 대비해 재시도
+  let voiceRetry = 0;
+  const voiceTimer = setInterval(() => {
+    if (preferredKoVoice || voiceRetry++ > 10) { clearInterval(voiceTimer); return; }
+    preferredKoVoice = pickPreferredKoVoice();
+  }, 500);
 }
 
 window.addEventListener("pointerdown", warmupTTS, { once: true });
