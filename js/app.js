@@ -63,6 +63,11 @@ const therapySelection = {
   classesByCenter: {}   // { "큰나무병원": ["언어", "인지"], ... }
 };
 
+const fridayTherapySelection = {
+  slot1: { center: null, classes: [] },
+  slot2: { center: null, classes: [] }
+};
+
 // ── 날짜 선택 상태 ───────────────────────────────────────────────────────────
 const WEEKDAY_OPTIONS = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"];
 const WEATHER_OPTIONS = ["맑음", "흐림", "비", "눈", "바람"];
@@ -585,6 +590,126 @@ function renderClassPicker(centerIndex) {
 // 이전 코드 호환용
 function renderTherapyPicker(screen) { renderClassPicker(screen.centerIndex || 0); }
 
+// ── 금요일 완성 일정 빌더 ────────────────────────────────────────────────────
+function buildFridayPlanItems() {
+  const result = [];
+  let idx = 1;
+  const addTaxi = () => result.push({ label: `${idx++}. 장애인 콜택시 타요`, image: "./images/transport_calltaxi.png" });
+  const addSlot = (slot) => {
+    if (slot.center) {
+      result.push({ label: `${idx++}. ${slot.center} 치료실 가요`, ...(THERAPY_CENTER_IMAGE[slot.center] ? { image: THERAPY_CENTER_IMAGE[slot.center] } : {}) });
+      slot.classes.forEach((cls) => result.push({ label: `${idx++}. ${cls} 수업 받아요`, ...(THERAPY_CLASS_IMAGE[cls] ? { image: THERAPY_CLASS_IMAGE[cls] } : {}) }));
+    }
+  };
+  addTaxi();
+  addSlot(fridayTherapySelection.slot1);
+  addTaxi();
+  result.push({ label: `${idx++}. 학교 가요`, image: "./images/outing_school1.png" });
+  addTaxi();
+  addSlot(fridayTherapySelection.slot2);
+  addTaxi();
+  result.push({ label: `${idx++}. 집에 와요`, image: "./images/home.png" });
+  return result;
+}
+
+// ── 금요일 치료실 슬롯 피커 ──────────────────────────────────────────────────
+function renderFridaySlotPicker(slotKey) {
+  appMainEl.classList.remove("app--spotlight");
+  spotlightViewEl.style.display = "none";
+  heroEl.style.display = "none";
+  gridEl.style.display = "";
+  gridEl.innerHTML = "";
+  gridEl.className = "grid";
+
+  const slot = fridayTherapySelection[slotKey];
+  const CENTERS = ["큰나무병원", "세브란스병원", "사람과소통"];
+  const CENTER_EMOJI = { "큰나무병원": "🌳", "세브란스병원": "🏥", "사람과소통": "🗣️" };
+
+  if (!slot.center) {
+    titleEl.textContent = "치료실 선택";
+    CENTERS.forEach((name) => {
+      const btn = document.createElement("button");
+      btn.className = "tile";
+      if (THERAPY_CENTER_IMAGE[name]) {
+        const img = document.createElement("img");
+        img.src = THERAPY_CENTER_IMAGE[name]; img.alt = name;
+        setupImageElement(img, true);
+        btn.appendChild(img);
+      } else {
+        const art = document.createElement("div");
+        art.className = "tile-art";
+        art.textContent = CENTER_EMOJI[name] || "🏥";
+        btn.appendChild(art);
+      }
+      const lbl = document.createElement("div");
+      lbl.className = "tile-label";
+      lbl.textContent = name;
+      btn.appendChild(lbl);
+      btn.addEventListener("click", () => { speak(name); slot.center = name; slot.classes = []; render(); });
+      gridEl.appendChild(btn);
+    });
+  } else {
+    titleEl.textContent = `${slot.center} 과목 선택`;
+    const options = THERAPY_OPTIONS_BY_CENTER[slot.center] || THERAPY_OPTIONS;
+    options.forEach((name) => {
+      const isSelected = slot.classes.includes(name);
+      const btn = document.createElement("button");
+      btn.className = `tile${isSelected ? " is-selected" : ""}`;
+      if (THERAPY_CLASS_IMAGE[name]) {
+        const img = document.createElement("img");
+        img.src = THERAPY_CLASS_IMAGE[name]; img.alt = name;
+        setupImageElement(img, true);
+        btn.appendChild(img);
+      } else {
+        const art = document.createElement("div");
+        art.className = "tile-art";
+        art.textContent = THERAPY_CLASS_EMOJI[name] || "🧩";
+        btn.appendChild(art);
+      }
+      const lbl = document.createElement("div");
+      lbl.className = "tile-label"; lbl.textContent = name;
+      btn.appendChild(lbl);
+      if (isSelected) {
+        const check = document.createElement("span");
+        check.className = "tile-check"; check.textContent = "✓";
+        btn.appendChild(check);
+      }
+      btn.addEventListener("click", () => {
+        speak(name);
+        const idx = slot.classes.indexOf(name);
+        if (idx >= 0) slot.classes.splice(idx, 1); else slot.classes.push(name);
+        render();
+      });
+      gridEl.appendChild(btn);
+    });
+
+    const backBtn2 = document.createElement("button");
+    backBtn2.className = "btn";
+    backBtn2.textContent = "← 치료실 다시 선택";
+    backBtn2.addEventListener("click", () => { slot.center = null; slot.classes = []; render(); });
+    gridEl.appendChild(backBtn2);
+
+    const doneBtn = document.createElement("button");
+    doneBtn.className = "btn main";
+    doneBtn.disabled = slot.classes.length === 0;
+    doneBtn.textContent = slot.classes.length === 0 ? "과목을 선택하세요" : `완료 (${slot.classes.length}개 선택)`;
+    doneBtn.addEventListener("click", () => {
+      if (!slot.classes.length) return;
+      speak("선택 완료");
+      // 두 슬롯 모두 선택됐으면 전체 일정 결과 표시, 아니면 뒤로
+      if (fridayTherapySelection.slot1.center && fridayTherapySelection.slot2.center) {
+        DATA.screens.scheduleFridayFinalResult.items = buildFridayPlanItems();
+        while (currentKey() !== "scheduleFriday" && navStack.length > 1) popScreen();
+        pushScreen("scheduleFridayFinalResult", "금요일 일정");
+      } else {
+        while (currentKey() !== "scheduleFriday" && navStack.length > 1) popScreen();
+      }
+      render();
+    });
+    gridEl.appendChild(doneBtn);
+  }
+}
+
 // ── 날짜 화면 ────────────────────────────────────────────────────────────────
 function renderDateHome() {
   appMainEl.classList.remove("app--spotlight");
@@ -796,6 +921,10 @@ function render() {
   const isSpotlight = screen.layout === "spotlight" && screen.spotlight?.image;
   const isEmpty     = screen.layout === "empty";
 
+  if (key === "scheduleFridayFinalResult") {
+    DATA.screens.scheduleFridayFinalResult.items = buildFridayPlanItems();
+  }
+
   if (key === "outingHome") {
     if (outingPlannerMode) {
       const modeTitle = { person: "사람 선택", place: "장소 선택", transport: "이동수단 선택" };
@@ -839,6 +968,9 @@ function render() {
     renderClassPicker(screen.centerIndex || 0);
   } else if (screen.layout === "therapyPicker") {
     renderTherapyPicker(screen);
+  } else if (screen.layout === "fridayClassPicker") {
+    const slotKey = screen.fridaySlot === 1 ? "slot1" : "slot2";
+    renderFridaySlotPicker(slotKey);
   } else if (isSpotlight) {
     appMainEl.classList.add("app--spotlight");
     spotlightViewEl.style.display = "flex";

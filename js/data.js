@@ -381,22 +381,60 @@ const DATA = {
 
     scheduleFriday: {
       title: "금요일 일정",
-      helper: "순서대로 눌러 말해 보세요.",
+      helper: "치료실 2개 선택 후 전체 일정을 확인하세요.",
       hero: [],
       items: [
-        { label: "1. 장애인 콜택시 타요",      image: "./images/transport_calltaxi.png" },
-        { label: "2. 큰나무 치료실 가요",       image: "./images/therapy_center_severance.png" },
-        { label: "3. 음악 수업 받아요",         image: "./images/therapy_class_music.png" },
-        { label: "4. 인지 수업 받아요",         image: "./images/therapy_class_cognitive.png" },
-        { label: "5. 작업 수업 받아요",         image: "./images/therapy_class_speech.png" },
-        { label: "6. 장애인 콜택시 타요",       image: "./images/transport_calltaxi.png" },
-        { label: "7. 학교 가요",               image: "./images/outing_school1.png" },
-        { label: "8. 장애인 콜택시 타요",       image: "./images/transport_calltaxi.png" },
-        { label: "9. 세브란스 병원 가요",       image: "./images/therapy_center_severance.png" },
-        { label: "10. 언어 수업 받아요",        image: "./images/therapy_class_speech.png" },
-        { label: "11. 장애인 콜택시 타요",      image: "./images/transport_calltaxi.png" },
-        { label: "12. 집에 와요",              image: "./images/home.png" }
+        { label: "오전 치료실 선택",  nav: "scheduleFridayTherapy1", image: "./images/therapy_center_severance.png" },
+        { label: "오후 치료실 선택",  nav: "scheduleFridayTherapy2", image: "./images/therapy_center_severance.png" },
+        { label: "전체 일정 보기",    nav: "scheduleFridayFinalResult", image: "./images/outing_school1.png" }
       ],
+      layout: "main",
+      showPlayer: false
+    },
+
+    scheduleFridayTherapy1: {
+      title: "오전 치료실 선택",
+      helper: "치료실과 과목을 선택하세요.",
+      hero: [],
+      items: [],
+      layout: "fridayClassPicker",
+      fridaySlot: 1,
+      showPlayer: false
+    },
+
+    scheduleFridayTherapy1Result: {
+      title: "오전 수업 일정",
+      helper: "선택한 수업이에요.",
+      hero: [],
+      items: [],
+      layout: "main",
+      showPlayer: false
+    },
+
+    scheduleFridayTherapy2: {
+      title: "오후 치료실 선택",
+      helper: "치료실과 과목을 선택하세요.",
+      hero: [],
+      items: [],
+      layout: "fridayClassPicker",
+      fridaySlot: 2,
+      showPlayer: false
+    },
+
+    scheduleFridayTherapy2Result: {
+      title: "오후 수업 일정",
+      helper: "선택한 수업이에요.",
+      hero: [],
+      items: [],
+      layout: "main",
+      showPlayer: false
+    },
+
+    scheduleFridayFinalResult: {
+      title: "금요일 전체 일정",
+      helper: "순서대로 눌러 말해 보세요.",
+      hero: [],
+      items: [],
       layout: "main",
       showPlayer: false
     },
