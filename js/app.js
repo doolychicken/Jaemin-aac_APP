@@ -8,7 +8,7 @@
 // ── DOM 참조 ──────────────────────────────────────────────────────────────────
 const titleEl            = document.getElementById("screenTitle");
 const backBtn            = document.getElementById("backButton");
-const homeBtn            = document.getElementById("homeButton");
+const homeBtn            = document.getElementById("homeButton") || { style: {}, addEventListener: () => {} };
 const crumbEl            = document.getElementById("breadcrumb");
 const gridEl             = document.getElementById("buttonGrid");
 const appMainEl          = document.querySelector("main.app");
