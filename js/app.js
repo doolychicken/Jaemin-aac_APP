@@ -77,6 +77,8 @@ const isAppleMobile = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
   (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 const useDirectYoutubeOpen = true;
 
+const isAndroid = /android/i.test(navigator.userAgent);
+
 function pickPreferredKoVoice() {
   if (!("speechSynthesis" in window)) return null;
   const voices = window.speechSynthesis.getVoices() || [];
@@ -95,6 +97,8 @@ function pickPreferredKoVoice() {
 
 function speak(text) {
   if (!("speechSynthesis" in window)) return;
+  // 안드로이드: 백그라운드에서 멈추는 버그 방지
+  if (isAndroid) window.speechSynthesis.cancel();
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   if (!preferredKoVoice) preferredKoVoice = pickPreferredKoVoice();
@@ -106,19 +110,26 @@ function speak(text) {
   }
   u.rate = 0.95;
   u.pitch = 1.0;
-  window.speechSynthesis.speak(u);
+  // 안드로이드: 음성 합성이 멈추는 버그를 resume()으로 방지
+  if (isAndroid) {
+    window.speechSynthesis.speak(u);
+    window.speechSynthesis.resume();
+  } else {
+    window.speechSynthesis.speak(u);
+  }
 }
 
 function warmupTTS() {
   if (!("speechSynthesis" in window) || ttsWarmedUp) return;
   ttsWarmedUp = true;
-  const warm = new SpeechSynthesisUtterance(" ");
-  warm.lang = "ko-KR";
   if (!preferredKoVoice) preferredKoVoice = pickPreferredKoVoice();
+  // 안드로이드: 첫 터치에서 음성 엔진 잠금 해제
+  const warm = new SpeechSynthesisUtterance(" ");
+  warm.lang = preferredKoVoice?.lang || "ko-KR";
   if (preferredKoVoice) warm.voice = preferredKoVoice;
   warm.volume = 0; warm.rate = 1.0; warm.pitch = 1.0;
   window.speechSynthesis.speak(warm);
-  window.speechSynthesis.cancel();
+  setTimeout(() => window.speechSynthesis.cancel(), 100);
 }
 
 // ── YouTube 유틸 ─────────────────────────────────────────────────────────────
