@@ -4,7 +4,7 @@
  * On first visit, pre-caches all images so subsequent loads are instant.
  */
 
-const CACHE_VERSION = 'v6';
+const CACHE_VERSION = 'v7';
 const CACHE_NAME = `jaemin-aac-${CACHE_VERSION}`;
 
 const PRECACHE_ASSETS = [
@@ -163,18 +163,16 @@ self.addEventListener('fetch', (event) => {
       )
     );
   } else {
-    // Stale-while-revalidate for HTML/CSS/JS: respond from cache if available,
-    // but always fetch a fresh copy in the background to keep cache up-to-date.
+    // Network-first for HTML/JS/CSS: 항상 네트워크에서 최신 파일 가져오고,
+    // 오프라인일 때만 캐시에서 제공
     event.respondWith(
-      caches.open(CACHE_NAME).then((cache) =>
-        cache.match(event.request).then((cached) => {
-          const networkFetch = fetch(event.request).then((response) => {
-            if (response.ok) cache.put(event.request, response.clone());
-            return response;
-          }).catch(() => cached);
-
-          return cached || networkFetch;
-        })
+      fetch(event.request).then((response) => {
+        if (response.ok) {
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, response.clone()));
+        }
+        return response;
+      }).catch(() =>
+        caches.open(CACHE_NAME).then((cache) => cache.match(event.request))
       )
     );
   }
