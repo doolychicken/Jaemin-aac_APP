@@ -8,6 +8,7 @@
 // ── DOM 참조 ──────────────────────────────────────────────────────────────────
 const titleEl            = document.getElementById("screenTitle");
 const backBtn            = document.getElementById("backButton");
+const homeBtn            = document.getElementById("homeButton");
 const crumbEl            = document.getElementById("breadcrumb");
 const gridEl             = document.getElementById("buttonGrid");
 const appMainEl          = document.querySelector("main.app");
@@ -770,6 +771,7 @@ function render() {
   const screen = DATA.screens[key] || DATA.screens.main;
   const isMain = key === "main";
   backBtn.style.display = isMain ? "none" : "inline-flex";
+  homeBtn.style.display = isMain ? "none" : "inline-flex";
   titleEl.textContent = screen.title || "AAC";
   helperEl.textContent = screen.helper || "";
   const crumb = breadcrumbText();
@@ -875,6 +877,14 @@ backBtn.addEventListener("click", () => {
     return;
   }
   popScreen();
+  selectedYoutube = "";
+  render();
+});
+
+homeBtn.addEventListener("click", () => {
+  speak("홈");
+  while (navStack.length > 1) popScreen();
+  outingPlannerMode = "";
   selectedYoutube = "";
   render();
 });
