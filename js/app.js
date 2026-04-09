@@ -81,22 +81,29 @@ function pickPreferredKoVoice() {
   if (!("speechSynthesis" in window)) return null;
   const voices = window.speechSynthesis.getVoices() || [];
   const koVoices = voices.filter((v) => (v.lang || "").toLowerCase().startsWith("ko"));
-  if (!koVoices.length) return null;
-  const priorities = [/female/i, /woman/i, /여성/, /google/i, /premium|neural|natural/i];
-  for (const rule of priorities) {
-    const found = koVoices.find((v) => rule.test(v.name || "") || rule.test(v.voiceURI || ""));
-    if (found) return found;
+  if (koVoices.length) {
+    const priorities = [/female/i, /woman/i, /여성/, /google/i, /premium|neural|natural/i];
+    for (const rule of priorities) {
+      const found = koVoices.find((v) => rule.test(v.name || "") || rule.test(v.voiceURI || ""));
+      if (found) return found;
+    }
+    return koVoices[0];
   }
-  return koVoices[0];
+  // 한국어 음성이 없으면 사용 가능한 아무 음성이나 사용
+  return voices[0] || null;
 }
 
 function speak(text) {
   if (!("speechSynthesis" in window)) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = "ko-KR";
   if (!preferredKoVoice) preferredKoVoice = pickPreferredKoVoice();
-  if (preferredKoVoice) u.voice = preferredKoVoice;
+  if (preferredKoVoice) {
+    u.voice = preferredKoVoice;
+    u.lang = preferredKoVoice.lang || "ko-KR";
+  } else {
+    u.lang = "ko-KR";
+  }
   u.rate = 0.95;
   u.pitch = 1.0;
   window.speechSynthesis.speak(u);
