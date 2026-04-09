@@ -344,7 +344,8 @@ const DATA = {
       helper: "스케줄 관련 항목을 선택하세요.",
       hero: [],
       items: [
-        { label: "오늘 일정", nav: "scheduleToday" },
+        { label: "오늘 일정",   nav: "scheduleToday",   image: "./images/outing_school1.png" },
+        { label: "금요일 일정", nav: "scheduleFriday",  image: "./images/transport_calltaxi.png" },
         { label: "내일 일정" },
         { label: "이번 주" }
       ],
@@ -362,6 +363,23 @@ const DATA = {
         { label: "3. 치료실 선택",         nav: "scheduleTodayTherapy" },
         { label: "4. 장애인 콜택시 타요",  image: "./images/transport_calltaxi.png" },
         { label: "5. 집에 와요",           image: "./images/home.png" }
+      ],
+      layout: "main",
+      showPlayer: false
+    },
+
+    scheduleFriday: {
+      title: "금요일 일정",
+      helper: "순서대로 눌러 말해 보세요.",
+      hero: [],
+      items: [
+        { label: "1. 치료실 가요",          image: "./images/therapy_center_severance.png" },
+        { label: "2. 장애인 콜택시 타요",   image: "./images/transport_calltaxi.png" },
+        { label: "3. 학교 가요",            image: "./images/outing_school1.png" },
+        { label: "4. 장애인 콜택시 타요",   image: "./images/transport_calltaxi.png" },
+        { label: "5. 치료실 가요",          image: "./images/therapy_center_severance.png" },
+        { label: "6. 장애인 콜택시 타요",   image: "./images/transport_calltaxi.png" },
+        { label: "7. 집에 와요",            image: "./images/home.png" }
       ],
       layout: "main",
       showPlayer: false
