@@ -20,10 +20,10 @@ body {
 }
 
 .app {
-  max-width: 980px;
+  max-width: 1400px;
   margin: 0 auto;
   min-height: 100vh;
-  padding: 56px 22px;
+  padding: 40px 22px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -813,7 +813,7 @@ body {
 @media (min-width: 768px) {
   .grid:not(.detail):not(.media) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    max-width: 960px;
+    max-width: 100%;
     margin-inline: auto;
   }
 
@@ -1828,7 +1828,7 @@ body {
   width: 100%;
 }
 
-@media (min-width: 600px), (orientation: landscape) {
+@media (min-width: 600px) {
   .dv-grid {
     grid-template-columns: 1fr 1fr;
     gap: 14px;
@@ -1957,4 +1957,201 @@ body {
   align-items: center;
   gap: 10px;
   width: 100%;
+}
+
+/* ══════════════════════════════════════════════════
+   iPad 가로 (Landscape) 최적화
+   기준: min-width 1024px (iPad Air/Pro 가로)
+         min-width 1200px (iPad Pro 12.9" 가로)
+══════════════════════════════════════════════════ */
+
+/* ── 공통: 앱 컨테이너 가로 패딩 확대 ── */
+@media (min-width: 1024px) {
+  .app {
+    padding: 24px 40px;
+    gap: 16px;
+    justify-content: flex-start;
+  }
+
+  .topbar {
+    padding-bottom: 4px;
+  }
+
+  /* 상단 버튼 크기 업 */
+  .home-btn,
+  .back-btn {
+    padding: 14px 22px;
+    font-size: 1.1rem;
+  }
+
+  /* 날씨 선택: 항상 6열 */
+  .date-weather-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  /* 날짜 카드: 가로에서 패딩 줄이기 */
+  .date-card {
+    padding: 20px 28px 16px;
+  }
+
+  /* 날짜 드럼 피커: 가로 배치로 전환 */
+  .date-home-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  /* 날짜 카드 (드럼 포함) - 왼쪽 열 전체 차지 */
+  .date-card {
+    grid-row: 1 / 2;
+  }
+
+  /* 날씨 + 문장 읽기 - 오른쪽 열 */
+  .date-weather-section {
+    padding: 16px 20px;
+  }
+
+  /* 드럼 숫자 크기 조정: 넓은 화면에서 너무 크지 않게 */
+  .date-drum-number {
+    font-size: clamp(4rem, 8vw, 7rem);
+  }
+  .date-drum-unit {
+    font-size: clamp(3rem, 6.5vw, 5.5rem);
+  }
+  .date-drum-number--wd {
+    font-size: clamp(2.8rem, 6vw, 5rem);
+  }
+  .date-drum-unit--wd {
+    font-size: clamp(2.2rem, 4.5vw, 4rem);
+  }
+
+  /* 일일 시각 스케줄: 3열 */
+  .dv-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  /* 일일 스케줄 카드 이미지: 가로에서 적절히 줄이기 */
+  .dv-img-wrap,
+  .dv-img {
+    width: 180px;
+    height: 180px;
+  }
+  .dv-art {
+    font-size: 7rem;
+  }
+  .dv-lbl {
+    font-size: 1.3rem;
+  }
+  .dv-num {
+    width: 44px;
+    height: 44px;
+    font-size: 1.35rem;
+  }
+
+  /* 얼굴 사진 */
+  .person-avatar.dv-face {
+    width: 72px;
+    height: 72px;
+  }
+
+  /* 주간 스케줄 컬럼 최소 너비 업 */
+  .weekly-col { min-width: 120px; }
+  .weekly-tile-img { width: 64px; height: 64px; }
+  .weekly-tile-art { font-size: 2.8rem; }
+  .weekly-tile-lbl { font-size: 0.78rem; }
+  .weekly-hdr { font-size: 1.15rem; padding: 10px 6px; }
+
+  /* 주간 타임테이블 타일 */
+  .wt-tile { min-height: 100px; }
+  .wt-img { width: 58px; height: 58px; }
+  .wt-art { font-size: 2.5rem; }
+  .wt-lbl { font-size: 0.72rem; }
+  .wt-dayhdr { font-size: 1.2rem; padding: 10px 6px; }
+  .wt-grid { gap: 6px; }
+
+  /* 외출하기 요약 타일 */
+  .grid.outing-summary-tiles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  /* 하루 스케줄 상세 페이지 최대 너비 넓히기 */
+  .wday-outer {
+    max-width: 900px;
+  }
+  .wday-img {
+    width: 130px;
+    height: 130px;
+  }
+  .wday-art {
+    font-size: 5rem;
+  }
+  .wday-lbl {
+    font-size: 1.45rem;
+  }
+
+  /* 활동 상세(wdetail) 최대 너비 */
+  .wdetail-outer {
+    max-width: 700px;
+    margin-inline: auto;
+  }
+  .wdetail-hero {
+    max-width: 560px;
+  }
+  .wdetail-hero-img {
+    width: min(220px, 30vw);
+    height: min(220px, 30vw);
+  }
+
+  /* 사람 선택 그리드: 4열 */
+  .weekly-person-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .weekly-person-btn img {
+    width: 80px;
+    height: 80px;
+  }
+
+  /* 집 스케줄 현재 항목 */
+  .home-runner-current {
+    min-height: 110px;
+  }
+  .home-runner-current img {
+    width: 80px !important;
+    height: 80px !important;
+  }
+  .home-runner-current .tile-label {
+    font-size: 1.4rem;
+  }
+
+  /* 스포트라이트 버튼 크기 */
+  .spotlight-button {
+    width: min(55vw, 560px);
+  }
+}
+
+/* ── iPad Pro 12.9" 가로 (1200px+) 추가 최적화 ── */
+@media (min-width: 1200px) {
+  .app {
+    padding: 20px 56px;
+  }
+
+  /* 일일 스케줄: 4열 */
+  .dv-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .dv-img-wrap,
+  .dv-img {
+    width: 150px;
+    height: 150px;
+  }
+  .dv-art {
+    font-size: 5.5rem;
+  }
+  .dv-lbl {
+    font-size: 1.15rem;
+  }
 }
