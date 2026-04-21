@@ -310,12 +310,12 @@ const DATA = {
       helper: "추가 카테고리를 선택하세요.",
       hero: [],
       items: [
-        { label: "외출하기",  nav: "outingHome",  image: "./images/outing.png" },
-        { label: "공부하기",  nav: "studyHome",   image: "./images/study.png" },
-        { label: "과목",      nav: "subjectHome", icon: "📚" },
-        { label: "사람",      nav: "peopleHome",  image: "./images/outing_person_me.png" },
-        { label: "휴식",      icon: "🛋️" },
-        { label: "이전",      nav: "main",        image: "./images/home.png" }
+        { label: "외출하기",  nav: "outingHome",   image: "./images/outing.png" },
+        { label: "공부하기",  nav: "studyHome",    image: "./images/study.png" },
+        { label: "과목",      nav: "subjectHome",  icon: "📚" },
+        { label: "사람",      nav: "peopleHome",   image: "./images/outing_person_me.png" },
+        { label: "날씨",      nav: "weatherHome",  image: "./images/weather.png" },
+        { label: "이전",      nav: "main",         image: "./images/home.png" }
       ],
       layout: "main",
       showPlayer: false
@@ -344,11 +344,67 @@ const DATA = {
       helper: "스케줄 관련 항목을 선택하세요.",
       hero: [],
       items: [
-        { label: "오늘 일정", nav: "scheduleToday", image: "./images/outing_school1.png" },
-        { label: "내일 일정" },
-        { label: "이번 주" }
+        { label: "오늘 일정", nav: "scheduleToday",        image: "./images/outing_school1.png" },
+        { label: "집 스케줄", nav: "scheduleHomeActivity", image: "./images/home.png" },
+        { label: "주간 스케줄", nav: "scheduleWeekly",     image: "./images/outing_school1.png" },
+        { label: "일일 스케줄표", nav: "scheduleDailyVisual", image: "./images/outing_school1.png" },
+        { label: "내일 일정" }
       ],
       layout: "main",
+      showPlayer: false
+    },
+
+    scheduleDailyVisual: {
+      title: "일일 시각 스케줄",
+      helper: "오늘 스케줄을 순서대로 볼 수 있어요.",
+      hero: [],
+      items: [],
+      layout: "dailyVisual",
+      showPlayer: false
+    },
+
+    scheduleWeekly: {
+      title: "주간 스케줄",
+      helper: "활동을 누르면 자세히 볼 수 있어요.",
+      hero: [],
+      items: [],
+      layout: "weeklySchedule",
+      showPlayer: false
+    },
+
+    scheduleWeeklyDay: {
+      title: "",
+      helper: "",
+      hero: [],
+      items: [],
+      layout: "weeklyDay",
+      showPlayer: false
+    },
+
+    scheduleWeeklyDetail: {
+      title: "",
+      helper: "",
+      hero: [],
+      items: [],
+      layout: "weeklyDetail",
+      showPlayer: false
+    },
+
+    scheduleHomeActivity: {
+      title: "집 스케줄 만들기",
+      helper: "할 일을 순서대로 눌러서 선택하세요. 다시 누르면 취소돼요.",
+      hero: [],
+      items: [],
+      layout: "homeActivityPicker",
+      showPlayer: false
+    },
+
+    scheduleHomeRun: {
+      title: "집 스케줄",
+      helper: "할 일을 완료했으면 눌러서 지워요.",
+      hero: [],
+      items: [],
+      layout: "homeScheduleRunner",
       showPlayer: false
     },
 
@@ -509,8 +565,12 @@ const DATA = {
       helper: "오늘 날씨를 선택하세요.",
       hero: [],
       items: [
-        { label: "맑음" }, { label: "흐림" }, { label: "비" },
-        { label: "눈" },   { label: "바람" }
+        { label: "맑음",     image: "./images/weather_sunny.png" },
+        { label: "흐림",     image: "./images/weather_cloudy.png" },
+        { label: "비",       image: "./images/weather_rain.png" },
+        { label: "눈",       image: "./images/weather_snow.png" },
+        { label: "바람",     image: "./images/weather_wind.png" },
+        { label: "천둥번개", image: "./images/weather_thunder.png" }
       ],
       layout: "main",
       showPlayer: false
@@ -836,6 +896,23 @@ const DATA = {
         { label: "아빠차",  image: "./images/dad car.png" },
         { label: "자동차1", image: "./images/transport_car.png" },
         { label: "자동차2", image: "./images/transport_car.png" }
+      ],
+      layout: "main",
+      showPlayer: false
+    },
+
+    // ── 날씨 ──────────────────────────────────────────────────────────────────
+    weatherHome: {
+      title: "날씨",
+      helper: "오늘 날씨를 선택하세요.",
+      hero: [],
+      items: [
+        { label: "맑음",     image: "./images/weather_sunny.png" },
+        { label: "흐림",     image: "./images/weather_cloudy.png" },
+        { label: "비",       image: "./images/weather_rain.png" },
+        { label: "눈",       image: "./images/weather_snow.png" },
+        { label: "바람",     image: "./images/weather_wind.png" },
+        { label: "천둥번개", image: "./images/weather_thunder.png" }
       ],
       layout: "main",
       showPlayer: false
