@@ -932,7 +932,7 @@ body {
 
 .weekly-col {
   flex: 1;
-  min-width: 80px;
+  min-width: 100px;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -957,15 +957,15 @@ body {
   border-radius: 12px;
   border: 1.5px solid var(--border);
   background: #fff;
-  padding: 7px 4px 6px;
+  padding: 8px 5px 7px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  min-height: 75px;
+  min-height: 88px;
   transition: transform 0.07s, box-shadow 0.07s;
   position: relative;
   user-select: none;
@@ -979,8 +979,8 @@ body {
 }
 
 .weekly-tile-img {
-  width: 46px;
-  height: 46px;
+  width: 56px;
+  height: 56px;
   object-fit: cover;
   border-radius: 9px;
 }
@@ -1235,11 +1235,12 @@ body {
 
 /* 태블릿에서 더 넓게 */
 @media (min-width: 768px) {
-  .weekly-col { min-width: 100px; }
-  .weekly-tile-img { width: 58px; height: 58px; }
-  .weekly-tile-art { font-size: 2.6rem; }
-  .weekly-tile-lbl { font-size: 0.72rem; }
-  .weekly-hdr { font-size: 1.1rem; }
+  .weekly-col { min-width: 130px; }
+  .weekly-tile { min-height: 105px; padding: 10px 6px 8px; }
+  .weekly-tile-img { width: 68px; height: 68px; }
+  .weekly-tile-art { font-size: 3rem; }
+  .weekly-tile-lbl { font-size: 0.76rem; }
+  .weekly-hdr { font-size: 1.15rem; padding: 10px 6px; }
   .weekly-person-btn img { width: 72px; height: 72px; }
 }
 
@@ -1248,12 +1249,13 @@ body {
 /* 시간대×요일 그리드 컨테이너 */
 .wt-grid {
   display: grid;
-  /* 첫 열: 시간대 레이블, 나머지 7열: 요일 */
-  grid-template-columns: 40px repeat(7, 1fr);
-  gap: 4px;
+  /* 첫 열: 시간대 레이블, 나머지 7열: 요일 (최소 110px 보장 → 좁으면 가로 스크롤) */
+  grid-template-columns: 36px repeat(7, minmax(110px, 1fr));
+  gap: 5px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 0 0 4px;
+  scroll-snap-type: x proximity;
+  padding: 0 0 8px;
   width: 100%;
 }
 
@@ -1296,11 +1298,11 @@ body {
 /* 활동 카드 타일 */
 .wt-tile {
   width: 100%;
-  min-height: 78px;
+  min-height: 100px;
   border-radius: 12px;
   border: 2.5px solid var(--day-border, #dbe3ef);
   background: #fff;
-  padding: 6px 3px 5px;
+  padding: 8px 4px 7px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1323,22 +1325,22 @@ body {
 
 /* 활동 이미지 */
 .wt-img {
-  width: clamp(34px, 5vw, 50px);
-  height: clamp(34px, 5vw, 50px);
+  width: clamp(50px, 9vw, 68px);
+  height: clamp(50px, 9vw, 68px);
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 9px;
   flex-shrink: 0;
 }
 
 /* 이모지 대체 */
 .wt-art {
-  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  font-size: clamp(2rem, 5vw, 2.8rem);
   line-height: 1;
 }
 
 /* 활동 레이블 */
 .wt-lbl {
-  font-size: clamp(0.48rem, 1.2vw, 0.65rem);
+  font-size: clamp(0.62rem, 1.6vw, 0.78rem);
   font-weight: 800;
   text-align: center;
   color: #1f2937;
@@ -1354,7 +1356,7 @@ body {
 /* 빈 셀 */
 .wt-empty {
   width: 100%;
-  min-height: 78px;
+  min-height: 100px;
   border: 2px dashed #e2e8f0;
   border-radius: 12px;
   background: #f8fafc;
@@ -1625,14 +1627,18 @@ body {
 
 /* 태블릿에서 더 크게 */
 @media (min-width: 768px) {
-  .wt-grid { gap: 6px; }
-  .wt-corner, .wt-period { min-width: 50px; grid-template-columns: 50px repeat(7, 1fr); }
-  .wt-tile { min-height: 95px; }
-  .wt-img { width: 56px; height: 56px; }
-  .wt-art { font-size: 2.4rem; }
-  .wt-lbl { font-size: 0.75rem; }
-  .wt-dayhdr { font-size: 1.15rem; padding: 10px 4px; }
-  .wt-period { font-size: 0.7rem; }
+  .wt-grid {
+    grid-template-columns: 46px repeat(7, minmax(130px, 1fr));
+    gap: 7px;
+  }
+  .wt-corner { min-width: 46px; }
+  .wt-period { min-width: 46px; font-size: 0.72rem; }
+  .wt-tile { min-height: 115px; padding: 10px 5px 8px; }
+  .wt-empty { min-height: 115px; }
+  .wt-img { width: 70px; height: 70px; }
+  .wt-art { font-size: 2.8rem; }
+  .wt-lbl { font-size: 0.78rem; }
+  .wt-dayhdr { font-size: 1.1rem; padding: 10px 4px; }
 }
 
 /* ── 요일 헤더 버튼 ── */
@@ -1879,11 +1885,11 @@ body {
   z-index: 1;
 }
 
-/* 이미지 영역: 3배 */
+/* 이미지 영역: 카드 너비에 맞게 유연하게 */
 .dv-img-wrap {
   flex-shrink: 0;
-  width: 240px;
-  height: 240px;
+  width: min(240px, calc(100% - 8px));
+  aspect-ratio: 1 / 1;
   border-radius: 20px;
   overflow: hidden;
   background: #f8fafc;
@@ -1894,8 +1900,8 @@ body {
 }
 
 .dv-img {
-  width: 240px;
-  height: 240px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
@@ -2032,11 +2038,9 @@ body {
     gap: 16px;
   }
 
-  /* 일일 스케줄 카드 이미지: 가로에서 적절히 줄이기 */
-  .dv-img-wrap,
-  .dv-img {
-    width: 180px;
-    height: 180px;
+  /* 일일 스케줄 카드 이미지: 가로에서 반응형 */
+  .dv-img-wrap {
+    width: min(180px, calc(100% - 8px));
   }
   .dv-art {
     font-size: 7rem;
@@ -2057,19 +2061,26 @@ body {
   }
 
   /* 주간 스케줄 컬럼 최소 너비 업 */
-  .weekly-col { min-width: 120px; }
-  .weekly-tile-img { width: 64px; height: 64px; }
-  .weekly-tile-art { font-size: 2.8rem; }
-  .weekly-tile-lbl { font-size: 0.78rem; }
-  .weekly-hdr { font-size: 1.15rem; padding: 10px 6px; }
+  .weekly-col { min-width: 150px; }
+  .weekly-tile { min-height: 120px; }
+  .weekly-tile-img { width: 80px; height: 80px; border-radius: 11px; }
+  .weekly-tile-art { font-size: 3.5rem; }
+  .weekly-tile-lbl { font-size: 0.84rem; }
+  .weekly-hdr { font-size: 1.25rem; padding: 12px 6px; }
 
   /* 주간 타임테이블 타일 */
-  .wt-tile { min-height: 100px; }
-  .wt-img { width: 58px; height: 58px; }
-  .wt-art { font-size: 2.5rem; }
-  .wt-lbl { font-size: 0.72rem; }
-  .wt-dayhdr { font-size: 1.2rem; padding: 10px 6px; }
-  .wt-grid { gap: 6px; }
+  .wt-grid {
+    grid-template-columns: 52px repeat(7, minmax(150px, 1fr));
+    gap: 8px;
+  }
+  .wt-corner, .wt-period { min-width: 52px; }
+  .wt-period { font-size: 0.78rem; }
+  .wt-tile { min-height: 130px; padding: 12px 6px 10px; }
+  .wt-empty { min-height: 130px; }
+  .wt-img { width: 84px; height: 84px; border-radius: 11px; }
+  .wt-art { font-size: 3.4rem; }
+  .wt-lbl { font-size: 0.85rem; }
+  .wt-dayhdr { font-size: 1.25rem; padding: 12px 6px; }
 
   /* 외출하기 요약 타일 */
   .grid.outing-summary-tiles {
@@ -2143,10 +2154,8 @@ body {
     grid-template-columns: repeat(4, 1fr);
     gap: 14px;
   }
-  .dv-img-wrap,
-  .dv-img {
-    width: 150px;
-    height: 150px;
+  .dv-img-wrap {
+    width: min(150px, calc(100% - 8px));
   }
   .dv-art {
     font-size: 5.5rem;
